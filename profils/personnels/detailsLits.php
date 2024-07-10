@@ -1,0 +1,161 @@
+<?php
+session_start();
+if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
+    header('Location: /COUD/codif/');
+    exit();
+}
+if (empty($_SESSION['classe'])) {
+    header('location: /COUD/codif/profils/personnels/niveau.php');
+    exit();
+}
+//connexion à la base de données
+include('../../traitement/fonction.php');
+connexionBD();
+// Sélectionnez les options à partir de la base de données avec une pagination
+include('../../traitement/requete.php');
+
+
+if (isset($_POST['filter'])) {
+    $filter = isset($_POST['filter']) ? $_POST['filter'] : '';
+    $resultatRequeteLitClasse = setFiltre($filter, $_SESSION['sexe']);
+    $total_pagess = getPaginationFiltreClasse($filter, $_SESSION['sexe']);
+    print_r(getPaginationFiltreClasse($filter, $_SESSION['sexe']));
+} else {
+    $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
+}
+// Comptez le nombre total d'options dans la base de données details lits affecter (quotas)
+// $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
+$countIn = 0;
+if (isset($_GET['erreurLitDeaffecter'])) {
+    $_SESSION['erreurLitDeaffecter'] = $_GET['erreurLitDeaffecter'];
+} else {
+    $_SESSION['erreurLitDeaffecter'] = '';
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COUD: CODIFICATION</title>
+    <!-- CSS================================================== -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- script================================================== -->
+    <script src="../../assets/js/modernizr.js"></script>
+    <script src="../../assets/js/pace.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap/js/bootstrap.min.js">
+    <link rel="stylesheet" href="../../assets/bootstrap/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <?php include('../../head.php'); ?>
+    <!-- end s-stats -->
+    <div class="row">
+        <div class="text-center">
+            <h1>Quota lits : <?= $_SESSION['classe']; ?> : <?= $resultatRequeteLitClasse->num_rows ?> Lits</h1>
+            <h5 style="color: red;"> <?= $_SESSION['erreurLitDeaffecter']; ?> </h5>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <form class="d-flex" role="search" method="POST" action="../personnels/detailsLits.php" id="filterForm">
+                    <select class="form-control me-2" placeholder="Search" aria-label="Search" name="filter" id="filter">
+                        <option disabled selected>FILTRE PAVILLONS</option>
+                        <?php
+                        while ($rowPavillon = mysqli_fetch_array($resultatRequetePavillonClasse)) { ?>
+                            <option value="<?= $rowPavillon['pavillon']; ?>"><?= $rowPavillon['pavillon']; ?></option>
+                        <?php } ?>
+                    </select>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- <ul class="options"> -->
+                <form id="myForm" action="../../traitement/removeQuotas.php" method="GET">
+                    <div class='options-container'>
+                        <?php
+                        // print_r($resultatRequeteLitClasse->num_rows);
+                        while ($row = mysqli_fetch_array($resultatRequeteLitClasse)) {
+                            if ($row['statut_migration'] == 'Migré dans les deux') {
+                                $countIn++;
+                            }
+                            if ($counter % 9 == 0) { ?>
+                                <div class='column'>
+                                <?php
+                            }
+                            if ($row['statut_migration'] == 'Migré vers quotas uniquement') {
+                                ?>
+                                    <label class="option" title="Lit non choisi">
+                                        <input type="checkbox" name="<?= $row['id_lit'] ?>" id="<?= $row['id_lit'] ?>"><?= $row['lit'] ?></input>
+                                    </label>
+                                <?php
+                            }
+                            if ($row['statut_migration'] == 'Migré dans les deux') {
+                                ?>
+                                    <label class="archive" title="Lit déja choisi!"><?= $row['lit'] ?> </label>
+                                <?php
+                            }
+                            $counter++;
+                            if ($counter % 9 == 0) { ?>
+                                </div>
+                            <?php
+                            }
+                        }
+                        // Fermeture de la dernière colonne si le nombre total d'options n'est pas un multiple de 4
+                        if ($counter % 9 != 0) { ?>
+                    </div>
+                <?php
+                        } ?>
+            </div><br>
+            <div class="row justify-content-center">
+
+                </style>
+                <?php if ($countIn == 0) { ?>
+                    <div class="col-md-2">
+                        <button type='reset' onclick="choixs()" class="btn btn-outline-danger fw-bold btn-lg btn-block">EFFACER</button>
+                    </div>
+                <?php } else { ?> <style>
+                        .option {
+                            pointer-events: none;
+                        }
+                    </style> <?php } ?>
+                <div class="col-md-2">
+                    <select class='form-select' onchange='location = this.value;'>
+                        <?php
+                        // Affichage de la liste déroulante de pagination
+                        for ($i = 1; $i <= $total_pagess; $i++) {
+                            $offset_value = ($i - 1) * $limit;
+                            $selected = ($i == $page) ? "selected" : "";
+                            $lower_bound = $offset_value + 1;
+                            $upper_bound = min($offset_value + $limit, $count_datas['total']);
+                            echo "<option value='detailsLits.php?page=$i' $selected>De $lower_bound à $upper_bound</option>";
+                        } ?>
+                    </select>
+                </div>
+                <?php
+                // Fermez la connexion
+                mysqli_close($connexion);
+                ?>
+                <?php if ($countIn == 0) { ?>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-success fw-bold bg-darkblue btn-lg btn-block" type='submit'>RETIRER</button>
+                    </div>
+                <?php } ?>
+            </div>
+            </form>
+            <!-- </ul> -->
+        </div>
+    </div>
+    <script src="../../assets/js/jquery-3.2.1.min.js"></script>
+    <script src="../../assets/js/plugins.js"></script>
+    <script src="../../assets/js/main.js"></script>
+</body>
+<script src="../../assets/js/script.js"></script>
+
+</html>

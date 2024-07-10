@@ -1,0 +1,135 @@
+<?php
+session_start();
+if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
+    header('Location: /COUD/codif/');
+    exit();
+}
+if (empty($_SESSION['classe'])) {
+    header('location: /COUD/codif/profils/personnels/niveau.php');
+    exit();
+}
+include('../../traitement/fonction.php');
+connexionBD();
+include('../../traitement/requete.php');
+
+if (isset($_POST['filter'])) {
+    $filter = isset($_POST['filter']) ? $_POST['filter'] : '';
+    $resultatRequeteTotalLit = setFiltre($filter, $_SESSION['sexe']);
+    $total_lit_pages = getPaginationFiltre($filter, $_SESSION['sexe']);
+} else {
+    $total_lit_pages = getAllLitPagination($_SESSION['sexe']);
+}
+
+if (isset($_GET['erreurLitAffecter'])) {
+    $_SESSION['erreurLitAffecter'] = $_GET['erreurLitAffecter'];
+} else {
+    $_SESSION['erreurLitAffecter'] = '';
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COUD: CODIFICATION</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <!-- script================================================== -->
+    <script src="../assets/js/modernizr.js"></script>
+    <script src="../assets/js/pace.min.js"></script>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap/js/bootstrap.min.js">
+    <link rel="stylesheet" href="../../assets/bootstrap/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <?php include('../../head.php'); ?>
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="text-center">
+                <h1>Alouer un quota à la : <?= $_SESSION['classe']; ?> </h1>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <span style="color: red;"> <?= $_SESSION['erreurLitAffecter']; ?> </span>
+        <div class="row">
+            <div class="col-md-2">
+                <form class="d-flex" role="search" method="POST" action="../personnels/listeLits.php" id="filterForm">
+                    <select class="form-control me-2" placeholder="Search" aria-label="Search" name="filter" id="filter">
+                        <option disabled selected>FILTRE PAVILLONS</option>
+                        <?php
+                        while ($rowPavillon = mysqli_fetch_array($resultatRequetePavillon)) { ?>
+                            <option value="<?= $rowPavillon['pavillon']; ?>"><?= $rowPavillon['pavillon']; ?></option>
+                        <?php } ?>
+                    </select>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form id="myForm" action="../../traitement/addQuotas.php" method="GET">
+                    <div class='options-container'>
+                        <?php
+                        while ($row = mysqli_fetch_array($resultatRequeteTotalLit)) {
+                            if ($counter % 9 == 0) { ?>
+                                <div class='column'>
+                                <?php
+                            }
+                            if ($row['statut_migration'] == 'Non migré') { ?>
+                                    <label class="option" title="Lit non affecté">
+                                        <input type="checkbox" name="<?= $row['id_lit'] ?>" id="<?= $row['id_lit'] ?>"><?= $row['lit'] ?></input>
+                                    </label>
+                                <?php
+                            } else { ?>
+                                    <label class="archive" title="Lit affecté"><?= $row['lit'] ?> </label>
+                                <?php
+                            }
+                            $counter++;
+                            if ($counter % 9 == 0) { ?>
+                                </div>
+                            <?php
+                            }
+                        }
+                        if ($counter % 9 != 0) { ?>
+                    </div>
+                <?php
+                        } ?>
+            </div><br>
+            <div class="row justify-content-center">
+                <div class="col-md-2">
+                    <button type='reset' onclick="choix()" class="btn btn-outline-danger fw-bold btn-lg btn-block" title="Annulé la selection">EFFACER</button>
+                </div>
+                <div class="col-md-2">
+                    <select class='form-select' onchange='location = this.value;'>
+                        <?php
+                        // Affichage de la liste déroulante de pagination
+                        for ($i = 1; $i <= $total_lit_pages; $i++) {
+                            $offset_value = ($i - 1) * $limit;
+                            $selected = ($i == $page) ? "selected" : "";
+                            $lower_bound = $offset_value + 1;
+                            $upper_bound = min($offset_value + $limit, $count_data_total['total']);
+                            echo "<option value='listeLits.php?page=$i' $selected>De $lower_bound à $upper_bound</option>";
+                        } ?>
+                    </select>
+                </div>
+                <?php
+                mysqli_close($connexion);
+                ?>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-success fw-bold bg-darkblue btn-lg btn-block" type='submit' title="Sauvegarder les lits selectionnées">ENREGISTRER</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../assets/js/jquery-3.2.1.min.js"></script>
+    <script src="../../assets/js/plugins.js"></script>
+    <script src="../../assets/js/main.js"></script>
+</body>
+<script src="../../assets/js/script.js"></script>
+
+</html>
