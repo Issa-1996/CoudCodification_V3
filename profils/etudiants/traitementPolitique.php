@@ -9,9 +9,7 @@ require_once('../../traitement/fonction.php');
 
 if (isset($_GET) && count($_GET) > 0) { 
     $idEtu = $_SESSION['id_etu'];
-    $requeteInsert = "INSERT INTO `politique_conf` (`id_etu`, `dateTime`) VALUES ($idEtu, NOW())";
-    $sql = $connexion->prepare($requeteInsert);
-    $sql->execute();
+    addPolitiqueConf($idEtu);
     header('Location: resultat.php');
     exit();
 }

@@ -32,6 +32,11 @@ if (isset($_GET['erreurNonTrouver'])) {
 } else {
     $_SESSION['erreurNonTrouver'] = '';
 }
+if (isset($_GET['erreurForclo'])) {
+    $_SESSION['erreurForclo'] = $_GET['erreurForclo'];
+} else {
+    $_SESSION['erreurForclo'] = '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,30 +59,36 @@ if (isset($_GET['erreurNonTrouver'])) {
 
 <body>
     <?php include('../../head.php'); ?>
-    <div class="row">
-        <div class="text-center">
-            <h2>Validation des lits</h2>
-        </div>
-    </div>
     <div class="container">
+        <div class="row">
+            <div class="text-center">
+                <h2>Validation des lits</h2>
+            </div>
+        </div>
         <!-- <span style="color: red;"> <?= $_SESSION['erreurValider']; ?> </span> -->
         <div class="row" style="justify-content: center;">
             <?php if ($_SESSION['erreurValider']) { ?>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="alert alert-warning" role="alert">
                         <?= $_SESSION['erreurValider']; ?>
                     </div>
                 </div>
             <?php } elseif ($_SESSION['successValider']) { ?>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="alert alert-success" role="alert">
                         <?= $_SESSION['successValider']; ?>
                     </div>
                 </div>
             <?php } elseif ($_SESSION['erreurNonTrouver']) { ?>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="alert alert-danger" role="alert">
                         <?= $_SESSION['erreurNonTrouver']; ?>
+                    </div>
+                </div>
+            <?php } elseif ($_SESSION['erreurForclo']) { ?>
+                <div class="col-md-6">
+                    <div class="alert alert-dark" role="alert">
+                        <?= $_SESSION['erreurForclo']; ?>
                     </div>
                 </div>
             <?php } ?>
@@ -122,75 +133,144 @@ if (isset($_GET['erreurNonTrouver'])) {
                     <?php
                     if (isset($_GET['data'])) {
                         $data = $_GET['data'];
-                        // print_r($data);
-                    ?>
-                        <form action="requestValidation.php" method="POST">
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
-                                    <input class="form-control" name="valide" value="<?= $data['id_aff'] ?>" style="visibility: hidden;">
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" value="<?= $data['nom'] ?>" disabled>
-                                </div>
-                            </div>
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
-                                </div>
-                            </div><br>
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
-                                </div>
-                            </div><br>
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
-                                </div>
-                            </div>
-                            <?php if ($data['migration_status'] == 'Migré') { ?>
+                        if (isset($_GET['statut'])) { ?>
+                            <form action="requestValidation.php" method="POST">
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
                                     <div class="col-md-3 mb-3">
-                                        <input class="form-control" placeholder="Validé le <?= dateFromat($data['dateTime_val']) ?>" disabled>
+                                        <input type="text" class="form-control" placeholder="Prénom : <?= $data['prenoms'] ?>" disabled>
+                                        <input class="form-control" name="id_etu" value="<?= $data['id_etu'] ?>" style="visibility: hidden;">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" value="Nom : <?= $data['nom'] ?>" disabled>
+                                        <?php if (isset($_GET['idLit'])) { ?>
+                                            <input class="form-control" name="idLit" value="<?= $_GET['idLit'] ?>" style="visibility: hidden;">
+                                        <?php } ?>
                                     </div>
                                 </div>
-                                <a class="btn btn-secondary" href="/COUD/codif/profils/validation/validation.php" type="button">RETOUR</a>
-                            <?php } else { ?>
-                                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
-                            <?php } ?>
-                            <!-- Modal -->
-                            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="Faculté : <?= $data['etablissement'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="Classe : <?= $data['niveauFormation'] ?>" disabled>
+                                    </div>
+                                </div><br>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="Moyenne : <?= $data['moyenne'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="Statut : <?= $_GET['statut'] ?>" disabled>
+                                    </div>
+                                </div><br>
+                                <?php
+                                if ($_GET['statut'] != 'forclu') {
+                                ?>
+                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
+                                <?php
+                                } else { ?>
+                                    <div class="row" style="display: flex;justify-content: center;color:black;">
+                                        <div class="col-md-3 mb-3">
+                                            <input class="form-control" placeholder="Date Limite : <?= dateFromat($data['data_limite']) ?>" disabled>
                                         </div>
-                                        <div class="modal-body">
-                                            Êtes-vous sûr de vouloir effectuer cette action ?
+                                        <div class="col-md-3">
+                                            <input class="form-control" placeholder="Nature : <?= $data['nature'] ?>" disabled>
                                         </div>
-                                        <div class="modal-footer">
-                                            <!-- Boutons pour confirmer ou annuler -->
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                            <button type="submit" class="btn btn-primary">Confirmer</button>
+                                    </div><br>
+                                    <a class="btn btn-secondary" href="/COUD/codif/profils/validation/validation.php" type="button">RETOUR</a>
+                                <?php   }
+                                ?>
+                                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Êtes-vous sûr de vouloir effectuer cette action ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!-- Boutons pour confirmer ou annuler -->
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                                <button type="submit" class="btn btn-primary">Confirmer</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                    <?php } ?>
+                            </form>
+                        <?php } else {
+                        ?>
+                            <form action="requestValidation.php" method="POST">
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
+                                        <input class="form-control" name="valide" value="<?= $data['0'] ?>" style="visibility: hidden;">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" value="<?= $data['nom'] ?>" disabled>
+                                    </div>
+                                </div>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
+                                    </div>
+                                </div><br>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
+                                    </div>
+                                </div><br>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
+                                    </div>
+                                </div>
+                                <?php if ($data['migration_status'] == 'Migré') { ?>
+                                    <div class="row" style="display: flex;justify-content: center;color:black;">
+                                        <div class="col-md-3 mb-3">
+                                            <input class="form-control" placeholder="Validé le <?= dateFromat($data['dateTime_val']) ?>" disabled>
+                                        </div>
+                                    </div>
+                                    <a class="btn btn-secondary" href="/COUD/codif/profils/validation/validation.php" type="button">RETOUR</a>
+                                <?php } else { ?>
+                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
+                                <?php } ?>
+                                <!-- Modal -->
+                                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Êtes-vous sûr de vouloir effectuer cette action ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!-- Boutons pour confirmer ou annuler -->
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                                <button type="submit" class="btn btn-primary">Confirmer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                    <?php }
+                    } ?>
                 </ul>
             </div>
         </div>

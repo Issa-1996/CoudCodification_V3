@@ -32,6 +32,11 @@ if (isset($_GET['erreurNonTrouver'])) {
 } else {
     $_SESSION['erreurNonTrouver'] = '';
 }
+if (isset($_GET['erreurForclo'])) {
+    $_SESSION['erreurForclo'] = $_GET['erreurForclo'];
+} else {
+    $_SESSION['erreurForclo'] = '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,30 +59,36 @@ if (isset($_GET['erreurNonTrouver'])) {
 
 <body>
     <?php include('../../head.php'); ?>
-    <div class="row">
-        <div class="text-center">
-            <h2>Paiement de caution des lits</h2>
-        </div>
-    </div>
     <div class="container">
+        <div class="row">
+            <div class="text-center">
+                <h2>Paiement de caution des lits</h2>
+            </div>
+        </div>
         <!-- <span style="color: red;"> <?= $_SESSION['erreurValider']; ?> </span> -->
         <div class="row" style="justify-content: center;">
             <?php if ($_SESSION['erreurValider']) { ?>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="alert alert-warning" role="alert">
                         <?= $_SESSION['erreurValider']; ?>
                     </div>
                 </div>
             <?php } elseif ($_SESSION['successValider']) { ?>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="alert alert-success" role="alert">
                         <?= $_SESSION['successValider']; ?>
                     </div>
                 </div>
             <?php } elseif ($_SESSION['erreurNonTrouver']) { ?>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="alert alert-danger" role="alert">
                         <?= $_SESSION['erreurNonTrouver']; ?>
+                    </div>
+                </div>
+            <?php } elseif ($_SESSION['erreurForclo']) { ?>
+                <div class="col-md-6">
+                    <div class="alert alert-dark" role="alert">
+                        <?= $_SESSION['erreurForclo']; ?>
                     </div>
                 </div>
             <?php } ?>
@@ -124,58 +135,75 @@ if (isset($_GET['erreurNonTrouver'])) {
                         <form action="requestPaiement.php" method="POST">
                             <div class="row" style="display: flex;justify-content: center;color:black;">
                                 <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
-                                    <input class="form-control" name="valide" value="<?= $data['id_val'] ?>" style="visibility: hidden;">
+                                    <input type="text" class="form-control" placeholder="Prenom : <?= $data['prenoms'] ?>" disabled>
+                                    <?php if (isset($data['id_val'])) { ?>
+                                        <input class="form-control" name="valide" value="<?= $data['id_val'] ?>" style="visibility: hidden;">
+                                    <?php } ?>
                                 </div>
                                 <div class="col-md-3">
-                                    <input class="form-control" value="<?= $data['nom'] ?>" disabled>
+                                    <input class="form-control" value="Nom : <?= $data['nom'] ?>" disabled>
                                 </div>
                             </div>
                             <div class="row" style="display: flex;justify-content: center;color:black;">
                                 <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
+                                    <input class="form-control" placeholder="Faculté : <?= $data['etablissement'] ?>" disabled>
                                 </div>
                                 <div class="col-md-3">
-                                    <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
+                                    <input class="form-control" placeholder="Classe : <?= $data['niveauFormation'] ?>" disabled>
                                 </div>
                             </div><br>
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
-                                </div>
-                            </div><br>
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
-                                </div>
-                            </div>
-                            <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="Lit choisi le : <?= dateFromat($data['dateTime_aff']) ?>" disabled>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']) ?>" disabled>
-                                </div>
-                            </div>
                             <?php
-                            if ($data['migration_status'] == 'Migré dans paiement_caution') {
-                            ?>
+                            if (isset($_GET['statut']) && $_GET['statut'] == 'forclu') { ?>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
                                     <div class="col-md-3 mb-3">
-                                        <input class="form-control" placeholder="Payer le : <?= dateFromat($data['dateTime_paie']) ?>" disabled>
+                                        <input class="form-control" placeholder="Date limite :<?= dateFromat($data['dateTime_for']) ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="Nature : <?= $data['nature'] ?>" disabled>
+                                    </div>
+                                </div><br>
+                            <?php } ?>
+                            <?php if (isset($data['id_aff'])) { ?>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
+                                    </div>
+                                </div><br>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
                                     </div>
                                 </div>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="Lit choisi le : <?= dateFromat($data['dateTime_aff']) ?>" disabled>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']) ?>" disabled>
+                                    </div>
+                                </div>
+                                <?php
+                                if ($data['migration_status'] == 'Migré dans paiement_caution') {
+                                ?>
+                                    <div class="row" style="display: flex;justify-content: center;color:black;">
+                                        <div class="col-md-3 mb-3">
+                                            <input class="form-control" placeholder="Payer le : <?= dateFromat($data['dateTime_paie']) ?>" disabled>
+                                        </div>
+                                    </div>
+                                    <a class="btn btn-secondary" href="/COUD/codif/profils/paiement/paiement.php" type="button">RETOUR</a>
+                                <?php
+                                } else {
+                                ?>
+                                    <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
+                                <?php }
+                            } else { ?>
                                 <a class="btn btn-secondary" href="/COUD/codif/profils/paiement/paiement.php" type="button">RETOUR</a>
-                            <?php
-                            } else {
-                            ?>
-                                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
                             <?php } ?>
                             <!-- Modal -->
                             <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">

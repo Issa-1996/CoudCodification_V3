@@ -24,23 +24,24 @@ if (!empty($_GET['username_user']) && !empty($_GET['password_user'])) {
         } else if ($row['profil_user'] == 'paiement') {
             header('Location: /COUD/codif/profils/paiement/paiement.php');
             exit();
-        } 
-        else if ($row['profil_user'] == 'chef_pavillon') {
+        } else if ($row['profil_user'] == 'chef_pavillon') {
+            $_SESSION['pavillon'] = $row['pavillon'];
             header('Location: /COUD/codif/profils/loger/loger.php');
             exit();
-        } 
-        else if ($row['profil_user'] == 'user') {
+        } else if ($row['profil_user'] == 'user') {
             $dataStudent = studentConnect($username);
             $_SESSION['id_etu'] = $dataStudent['id_etu'];
             $_SESSION['nationalite'] = $dataStudent['nationalite'];
             $_SESSION['niveau'] = $dataStudent['niveau'];
-            $_SESSION['num_etu '] = $dataStudent['num_etu'];
+            $_SESSION['num_etu'] = $dataStudent['num_etu'];
             $_SESSION['etablissement'] = $dataStudent['etablissement'];
-            $_SESSION['num_etu '] = $dataStudent['num_etu'];
+            $_SESSION['num_etu'] = $dataStudent['num_etu'];
             $_SESSION['classe'] = $dataStudent['niveauFormation'];
             $_SESSION['dateNaissance'] = $dataStudent['dateNaissance'];
             $_SESSION['lieuNaissance'] = $dataStudent['lieuNaissance'];
             $resultat = getPolitiqueConf($_SESSION['id_etu']);
+            // print_r($dataStudent);
+            // print_r(getValidateLitByStudent($_SESSION['num_etu ']));
             if ($resultat) {
                 header('Location: ../profils/etudiants/resultat.php');
                 exit();

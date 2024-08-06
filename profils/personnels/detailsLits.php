@@ -31,6 +31,11 @@ if (isset($_GET['erreurLitDeaffecter'])) {
 } else {
     $_SESSION['erreurLitDeaffecter'] = '';
 }
+if (isset($_GET['successLitDeaffecter'])) {
+    $_SESSION['successLitDeaffecter'] = $_GET['successLitDeaffecter'];
+} else {
+    $_SESSION['successLitDeaffecter'] = '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -53,14 +58,27 @@ if (isset($_GET['erreurLitDeaffecter'])) {
 
 <body>
     <?php include('../../head.php'); ?>
-    <!-- end s-stats -->
-    <div class="row">
-        <div class="text-center">
-            <h1>Quota lits : <?= $_SESSION['classe']; ?> : <?= $resultatRequeteLitClasse->num_rows ?> Lits</h1>
-            <h5 style="color: red;"> <?= $_SESSION['erreurLitDeaffecter']; ?> </h5>
-        </div>
-    </div>
     <div class="container">
+        <div class="row">
+            <div class="text-center">
+                <h1>Quota lits : <?= $_SESSION['classe']; ?> : <?= $resultatRequeteLitClasse->num_rows ?> Lits</h1>
+            </div>
+            <div class="col-md-12" style="display:flex; justify-content: center;">
+                <?php if ($_SESSION['erreurLitDeaffecter']) { ?>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger" role="alert">
+                            <?= $_SESSION['erreurLitDeaffecter']; ?>
+                        </div>
+                    </div>
+                <?php }else if ($_SESSION['successLitDeaffecter']) { ?>
+                    <div class="col-md-6">
+                        <div class="alert alert-success" role="alert">
+                            <?= $_SESSION['successLitDeaffecter']; ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-2">
                 <form class="d-flex" role="search" method="POST" action="../personnels/detailsLits.php" id="filterForm">

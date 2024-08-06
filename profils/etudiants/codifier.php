@@ -7,13 +7,10 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
 }
 //connexion à la base de données
 require('../../traitement/fonction.php');
-// Sélectionnez les options à partir de la base de données avec une pagination
-// require('../traitement/requete.php');
-
 // Comptez le nombre total d'options dans la base de données: pagination liste lits d'une classe selon l'etudiant connecté dans la page codifier.php
 $total_pagesEtudiant = getLitByStudent($_SESSION['classe'], $_SESSION['sexe']);
 // Liste des chambres deja affecter a une classe selon le niveau de la classe
-$resultRequeteLitClasseEtudiant=getLitValideByClasse($_SESSION['classe'], $_SESSION['sexe']);
+$resultRequeteLitClasseEtudiant = getLitValideByClasse($_SESSION['classe'], $_SESSION['sexe']);
 if (isset($_GET['erreurLitCodifier'])) {
     $_SESSION['erreurLitCodifier'] = $_GET['erreurLitCodifier'];
 } else {
@@ -39,9 +36,19 @@ if (isset($_GET['erreurLitCodifier'])) {
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Quota de la : <?= $_SESSION['classe']; ?> : <?= $resultRequeteLitClasseEtudiant->num_rows ?>Lits </h1>
-                <h5 style="color: red;"> <?= $_SESSION['erreurLitCodifier']; ?> </h5>
+                <h1>Veuiller cliqué sur un boutton pour choisir votre lit !!!</h1>
             </div>
+            <div class="col-md-12" style="display:flex; justify-content: center;">
+                <?php if ($_SESSION['erreurLitCodifier']) { ?>
+                    <div class="col-md-3">
+                        <div class="alert alert-danger" role="alert">
+                            <?= $_SESSION['erreurLitCodifier']; ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12">
                 <ul class="options">
                     <form id="myForm" action="traitementCodifier.php" method="GET">

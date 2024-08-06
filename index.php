@@ -46,13 +46,17 @@ include('traitement/connect.php');
             <center>
               <strong>VEUILLEZ RENSEIGNER LES CHAMPS</strong>
             </center>
-            <span class="login-error">
-              <?php
-              if (isset($_GET['error'])) {
-                echo $_GET['error'];
-              }
-              ?>
-            </span>
+            <!-- <span class="login-error"> -->
+              <div class="row" style="display:flex; justify-content: center;">
+                <?php if (isset($_GET['error'])) { ?>
+                  <div class="col-md-3">
+                    <div class="alert alert-danger" role="alert">
+                      <?= $_GET['error']; ?>
+                    </div>
+                  </div>
+                <?php } ?>
+              </div><br>
+            <!-- </span> -->
             <fieldset>
               <div class="form-field">
                 <input onkeydown="upperCaseF(this)" name="username_user" id="username" required type="text" placeholder="Numero de carte (ou du certificat d'inscription)" value="" class="full-width">

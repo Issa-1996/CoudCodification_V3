@@ -25,6 +25,11 @@ if (isset($_GET['erreurLitAffecter'])) {
 } else {
     $_SESSION['erreurLitAffecter'] = '';
 }
+if (isset($_GET['successLitAffecter'])) {
+    $_SESSION['successLitAffecter'] = $_GET['successLitAffecter'];
+} else {
+    $_SESSION['successLitAffecter'] = '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -47,15 +52,28 @@ if (isset($_GET['erreurLitAffecter'])) {
 <body>
     <?php include('../../head.php'); ?>
     <div class="container-fluid">
-
-        <div class="row">
-            <div class="text-center">
-                <h1>Alouer un quota à la : <?= $_SESSION['classe']; ?> </h1>
-            </div>
-        </div>
     </div>
     <div class="container">
-        <span style="color: red;"> <?= $_SESSION['erreurLitAffecter']; ?> </span>
+        <div class="text-center">
+            <h1>Alouer un quota à la : <?= $_SESSION['classe']; ?> </h1>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="display:flex; justify-content: center;">
+                <?php if ($_SESSION['erreurLitAffecter']) { ?>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger" role="alert">
+                            <?= $_SESSION['erreurLitAffecter']; ?>
+                        </div>
+                    </div>
+                <?php }else if ($_SESSION['successLitAffecter']) { ?>
+                    <div class="col-md-6">
+                        <div class="alert alert-success" role="alert">
+                            <?= $_SESSION['successLitAffecter']; ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-2">
                 <form class="d-flex" role="search" method="POST" action="../personnels/listeLits.php" id="filterForm">

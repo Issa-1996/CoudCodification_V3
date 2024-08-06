@@ -18,7 +18,7 @@ if (isset($_GET) && count($_GET) > 0) {
         }
     }
     if ($countError == 0) {
-        header('Location: ../profils/personnels/listeLits.php');
+        header('Location: ../profils/personnels/listeLits.php?successLitAffecter=Lits affecter à la '.$_SESSION['classe']. ' avec success!!!');
         exit();
     }
 } else {

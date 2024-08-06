@@ -12,6 +12,19 @@ if ($_SESSION['profil'] == 'user') {
     $affecter++;
   }
   $resultatReqLitEtu = getOneLitByStudent($_SESSION['id_etu']);
+  $quotaStudentConnect = getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)'];
+  // $moyenneStudentConnect = studentConnect($_SESSION['num_etu'])['moyenne'];
+  // $rangStudentConnect = getStatutByOneStudent($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $moyenneStudentConnect, $_SESSION['num_etu'])['rang'];
+
+  // $statutStudentConnect = getStatutByOneStudent($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $moyenneStudentConnect, $_SESSION['num_etu'])['statut'];
+  $statutStudentConnect = getOnestudentStatus($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $_SESSION['num_etu']);
+  // print_r($statutStudentConnect);
+
+
+  // $dataStudentConnect = studentConnect($_SESSION['username']);
+
+  // $teste = getStatutByOneStudent($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $moyenneStudentConnect, $_SESSION['num_etu']);
+  // print_r($teste);
 }
 ?>
 
@@ -80,15 +93,20 @@ if ($_SESSION['profil'] == 'user') {
             <a class="nav-link" href="../etudiants/resultat.php" title="Revenir à la page d'accueil">Accueil</a>
           </li>
           <?php
-          if ($affecter == 0) {
+          if (($affecter == 0) && ($statutStudentConnect['statut'] == 'attributaire')) {
             $_SESSION['lit_choisi'] = ''; ?>
             <li class="nav-item active">
               <a class="nav-link" href="../etudiants/codifier.php" title="Aller à la page des codifications">Codifier</a>
             </li>
           <?php } else {
             while ($rows = $resultatReqLitEtu->fetch_assoc()) {
-              $_SESSION['lit_choisi'] = $rows['lit'];
-              $_SESSION['id_lit'] = $rows['id_lit'];
+              if($rows['lit']){
+                $_SESSION['lit_choisi'] = $rows['lit'];
+                $_SESSION['id_lit'] = $rows['id_lit'];
+              }else{
+                $_SESSION['lit_choisi'] = '';
+                $_SESSION['id_lit'] = '';
+              }
             }
           }
           ?>
@@ -109,8 +127,47 @@ if ($_SESSION['profil'] == 'user') {
         (<?= $_SESSION['prenom'] . "  " . $_SESSION['nom'] ?>)
       </span></p>
   <?php } elseif ($_SESSION['profil'] == 'user') { ?>
-    <p class="lead">Espace etudiant: Bienvenue! <br> <br> <span>
-        (<?= $_SESSION['prenom'] . "  " . $_SESSION['nom'] ?>)
-      </span><br><br><span><?= $_SESSION['classe']; ?></span></p>
+    <p class="lead">Bienvenue <?= studentConnect($_SESSION['num_etu'])['prenoms'] . ' ' . studentConnect($_SESSION['num_etu'])['nom']; ?> !<br> <br>
+      MA SITUATION: Classe : <?= $statutStudentConnect['niveauFormation']; ?>/ Quota: <?= $quotaStudentConnect; ?>Lits/
+      Moyenne : <?= $statutStudentConnect['moyenne']; ?>/
+      Rang : <?= $statutStudentConnect['rang']; ?>/
+      Statut : <?= $statutStudentConnect['statut']; ?><br><br>
+      <?php
+      if ($statutStudentConnect['statut'] == 'suppleant') {
+        // $monTitulaire = getStatutByOneStudentTitulaireOfSuppl($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
+        $monTitulaire = getOneTitulaireBySuppleant($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
+      ?>
+        MON TITULAIRE : Prenom: <?= $monTitulaire['prenoms'] . '/ Nom : ' . $monTitulaire['nom'] . '/ Moyenne : ' . $monTitulaire['moyenne'] . '/ Rang : ' . $monTitulaire['rang']; ?><br><br>
+      <?php
+      }
+      if ($statutStudentConnect['statut'] == 'attributaire') { ?>
+        ACTION : <?= getValidateLogerByStudent($_SESSION['num_etu']); ?>
+      <?php } else 
+      if ($statutStudentConnect['statut'] == 'suppleant') { ?>
+        ACTION : <?php
+                  if (getValidateLitBySuppleant($monTitulaire['num_etu'])) {
+                    if (getValidateLitBySuppleant($_SESSION['num_etu'])) {
+                      if (getValidatePaiementLitBySuppleant($monTitulaire['num_etu'])) {
+                        if (getValidateLogerBySuppleant($monTitulaire['num_etu'])) {
+                          if (getValidateLogerBySuppleant($_SESSION['num_etu'])) {
+                            echo "VOUS AVEZ BIEN LOGER !!!";
+                          } else {
+                            echo "VOTRE TITULAIRE A BIEN LOGER, MERCI DE FAIRE DE MEME AU NIVEAU DU CHEF DE PAVILLON !!!";
+                          }
+                        } else {
+                          echo "VOTRE TITULAIRE A PAYER SA CAUTION, MAIS N'EN PAS ENCORE LOGER, VEUILLER PATIENTER";
+                        }
+                      } else {
+                        echo "VEUILLER PATIENTER QUE VOTRE TITULAIRE PAYE SA CAUTION, POUR LOGER !!!";
+                      }
+                    } else {
+                      echo "VOTRE TITULAIRE A VALIDER SA CODIFICATION, MERCI DE FAIRE DE MEME";
+                    }
+                  } else {
+                    echo "VEUILLER PATIENTER QUE VOTRE TITULAIRE VALIDE SA CODIFICATION, POUR FAIRE DE MEME";
+                  }
+                  ?>
+      <?php } ?>
+    </p>
   <?php } ?>
 </section>

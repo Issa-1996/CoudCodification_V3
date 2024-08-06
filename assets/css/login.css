@@ -14,7 +14,11 @@
 body {
   background-color: #f3f3f3;
 }
-
+.alert {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
 .login-form {
   max-width: 500px;
   margin: 0 auto;
