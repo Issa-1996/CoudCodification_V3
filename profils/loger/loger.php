@@ -131,46 +131,46 @@ if (isset($_GET['erreurForclo'])) {
                     <?php
                     if (isset($_GET['data'])) {
                         $data = $_GET['data'];
+                        print_r($data);
                         if (isset($_GET['statut']) && $_GET['statut'] == 'suppleant') {
-                            print_r($data);
                     ?>
                             <form action="requestLoger.php" method="POST">
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
                                         <input class="form-control" name="id_val" value="<?= $data['id_val'] ?>" style="visibility: hidden;">
                                     </div>
-                                    <div class="col-md-3">
-                                        <input class="form-control" value="<?= $data['nom'] ?>" disabled>
+                                    <div class="col-md-4">
+                                        <input class="form-control" placeholder="<?= $data['nom'] ?>" disabled>
                                         <input class="form-control" name="statut" value="<?= $data['statut'] ?>" style="visibility: hidden;">
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']);  ?>" disabled>
                                     </div>
                                     <!-- </div> -->
@@ -178,7 +178,7 @@ if (isset($_GET['erreurForclo'])) {
                                     if ($data['etat_id_val'] == 'Migré') {
                                     ?>
                                         <!-- <div class="row" style="display: flex;justify-content: center;color:black;"> -->
-                                        <div class="col-md-3 mb-3">
+                                        <div class="col-md-4 mb-3">
                                             <input class="form-control" placeholder="Loger le : <?= dateFromat($data['dateTime_loger']);  ?>" disabled>
                                         </div>
                                 </div>
@@ -187,7 +187,7 @@ if (isset($_GET['erreurForclo'])) {
                                     } else {
                             ?>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">LOGER</button>
                                     </div>
                                 </div>
@@ -217,43 +217,43 @@ if (isset($_GET['erreurForclo'])) {
                         <?php } else { ?>
                             <form action="requestLoger.php" method="POST">
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
                                         <input class="form-control" name="valide" value="<?= $data['id_paie'] ?>" style="visibility: hidden;">
                                     </div>
-                                    <div class="col-md-3">
-                                        <input class="form-control" value="<?= $data['nom'] ?>" disabled>
+                                    <div class="col-md-4">
+                                        <input class="form-control" placeholder="<?= $data['nom'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']);  ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="Payer le : <?= dateFromat($data['dateTime_paie']) ?>" disabled>
                                     </div>
                                 </div>
@@ -261,7 +261,7 @@ if (isset($_GET['erreurForclo'])) {
                                 if ($data['etat_id_paie'] == 'Migré') {
                                 ?>
                                     <div class="row" style="display: flex;justify-content: center;color:black;">
-                                        <div class="col-md-3 mb-3">
+                                        <div class="col-md-4 mb-3">
                                             <input class="form-control" placeholder="Loger le : <?= dateFromat($data['27']);  ?>" disabled>
                                         </div>
                                     </div>

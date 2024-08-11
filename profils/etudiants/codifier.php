@@ -60,7 +60,7 @@ if (isset($_GET['erreurLitCodifier'])) {
                                     <div class='column'>
                                     <?php
                                 }
-                                if ($row['statut_migration'] == 'Migré vers quotas uniquement') {
+                                if ($row['statut_migration'] == 'Migré vers codif_quota uniquement') {
                                     ?>
                                         <label class="optionEtu" title="Lit non choisi !">
                                             <input type="radio" name="lit_selection" value="<?= $row['id_lit'] ?>"><?= $row['lit'] ?></input>

@@ -136,30 +136,30 @@ if (isset($_GET['erreurForclo'])) {
                         if (isset($_GET['statut'])) { ?>
                             <form action="requestValidation.php" method="POST">
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input type="text" class="form-control" placeholder="Prénom : <?= $data['prenoms'] ?>" disabled>
                                         <input class="form-control" name="id_etu" value="<?= $data['id_etu'] ?>" style="visibility: hidden;">
                                     </div>
-                                    <div class="col-md-3">
-                                        <input class="form-control" value="Nom : <?= $data['nom'] ?>" disabled>
+                                    <div class="col-md-4">
+                                        <input class="form-control" placeholder="Nom : <?= $data['nom'] ?>" disabled>
                                         <?php if (isset($_GET['idLit'])) { ?>
                                             <input class="form-control" name="idLit" value="<?= $_GET['idLit'] ?>" style="visibility: hidden;">
                                         <?php } ?>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="Faculté : <?= $data['etablissement'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="Classe : <?= $data['niveauFormation'] ?>" disabled>
                                     </div>
                                 </div><br>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="Moyenne : <?= $data['moyenne'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="Statut : <?= $_GET['statut'] ?>" disabled>
                                     </div>
                                 </div><br>
@@ -170,10 +170,10 @@ if (isset($_GET['erreurForclo'])) {
                                 <?php
                                 } else { ?>
                                     <div class="row" style="display: flex;justify-content: center;color:black;">
-                                        <div class="col-md-3 mb-3">
+                                        <div class="col-md-4 mb-3">
                                             <input class="form-control" placeholder="Date Limite : <?= dateFromat($data['data_limite']) ?>" disabled>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <input class="form-control" placeholder="Nature : <?= $data['nature'] ?>" disabled>
                                         </div>
                                     </div><br>
@@ -205,41 +205,41 @@ if (isset($_GET['erreurForclo'])) {
                         ?>
                             <form action="requestValidation.php" method="POST">
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4     mb-3">
                                         <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
                                         <input class="form-control" name="valide" value="<?= $data['0'] ?>" style="visibility: hidden;">
                                     </div>
-                                    <div class="col-md-3">
-                                        <input class="form-control" value="<?= $data['nom'] ?>" disabled>
+                                    <div class="col-md-4    ">
+                                        <input class="form-control" placeholder="<?= $data['nom'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4     mb-3">
                                         <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4    ">
                                         <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
                                     </div>
                                 </div><br>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4     mb-3">
                                         <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4    ">
                                         <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
                                     </div>
                                 </div><br>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4     mb-3">
                                         <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4    ">
                                         <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
                                     </div>
                                 </div>
                                 <?php if ($data['migration_status'] == 'Migré') { ?>
                                     <div class="row" style="display: flex;justify-content: center;color:black;">
-                                        <div class="col-md-3 mb-3">
+                                        <div class="col-md-4     mb-3">
                                             <input class="form-control" placeholder="Validé le <?= dateFromat($data['dateTime_val']) ?>" disabled>
                                         </div>
                                     </div>

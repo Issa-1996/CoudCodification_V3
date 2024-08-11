@@ -107,7 +107,7 @@ if (isset($_GET['successLitDeaffecter'])) {
                                 <div class='column'>
                                 <?php
                             }
-                            if ($row['statut_migration'] == 'Migré vers quotas uniquement') {
+                            if ($row['statut_migration'] == 'Migré vers codif_quota uniquement') {
                                 ?>
                                     <label class="option" title="Lit non choisi">
                                         <input type="checkbox" name="<?= $row['id_lit'] ?>" id="<?= $row['id_lit'] ?>"><?= $row['lit'] ?></input>

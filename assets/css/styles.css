@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f2f2f2;
 }
-.alert{
+.alert {
   font-size: 14px;
 }
 
@@ -100,7 +100,7 @@ body {
   font-weight: bold;
   vertical-align: middle;
   border: 1px solid #3777b0;
-  color: white; 
+  color: white;
   background-color: red;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
@@ -180,13 +180,19 @@ strong {
   font-size: 20px;
   color: darkslategray;
 }
-.login-error{
+.login-error {
   color: red;
   font-size: 18px;
   margin-left: 10%;
 }
 
-.site-logo img{
+.site-logo img {
   width: 100%;
   margin-top: 10%;
+}
+input[placeholder] {
+  font-size: 18px;
+}
+textarea[placeholder] {
+  font-size: 18px;
 }

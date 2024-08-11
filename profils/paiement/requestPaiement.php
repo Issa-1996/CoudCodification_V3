@@ -63,8 +63,10 @@ if (isset($_POST['valide'])) {
     try {
         $id_aff = $_POST['valide'];
         $user = $_SESSION['username'];
+        $montant = $_POST['montant'];
+        $libelle = $_POST['libelle'];
         // Appel de la fonction d'enregistrement du paiement de la caution
-        $requete = setPaiement($id_aff, $user);
+        $requete = setPaiement($id_aff, $user, $montant, $libelle);
         print_r($requete);
         if ($requete == 1) {
             header('Location: paiement.php?successValider=Paiement valider avec success !!!');

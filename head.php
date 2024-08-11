@@ -61,21 +61,21 @@ if ($_SESSION['profil'] == 'user') {
     </div>
     <nav class="header-nav-wrap">
       <ul class="header-nav">
-        <?php if (($_SESSION['profil'] == 'paiement') && isset($_SESSION['classe'])) { ?>
+        <?php if (($_SESSION['profil'] == 'paiement')) { ?>
           <li class="nav-item">
             <a class="nav-link" href="paiement.php" title="Paiement de caution">Paiement</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../personnels/niveau.php" title="Changer de niveau de formation ">Changer-Classe</a>
+            <a class="nav-link" href="etatPaiement.php" title="Changer de niveau de formation ">Etat Paiement</a>
           </li>
         <?php } ?>
-        <?php if (($_SESSION['profil'] == 'validation') && isset($_SESSION['classe'])) { ?>
+        <?php if (($_SESSION['profil'] == 'validation')) { ?>
           <li class="nav-item">
             <a class="nav-link" href="validation.php" title="Paiement de caution">Validation</a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="../personnels/niveau.php" title="Changer de niveau de formation ">Changer-Classe</a>
-          </li>
+          </li> -->
         <?php } ?>
         <?php if (($_SESSION['profil'] == 'quota') && isset($_SESSION['classe'])) { ?>
           <li class="nav-item active">
@@ -100,10 +100,10 @@ if ($_SESSION['profil'] == 'user') {
             </li>
           <?php } else {
             while ($rows = $resultatReqLitEtu->fetch_assoc()) {
-              if($rows['lit']){
+              if ($rows['lit']) {
                 $_SESSION['lit_choisi'] = $rows['lit'];
                 $_SESSION['id_lit'] = $rows['id_lit'];
-              }else{
+              } else {
                 $_SESSION['lit_choisi'] = '';
                 $_SESSION['id_lit'] = '';
               }
@@ -122,7 +122,7 @@ if ($_SESSION['profil'] == 'user') {
   <!-- end s-header -->
 </body>
 <section id="homedesigne" class="s-homedesigne">
-  <?php if (($_SESSION['profil'] == 'quota') || ($_SESSION['profil'] == 'paiement') || ($_SESSION['profil'] == 'validation') || ($_SESSION['profil'] == 'chef_pavillon')) { ?>
+  <?php if (($_SESSION['profil'] == 'quota') || ($_SESSION['profil'] == 'paiement') || ($_SESSION['profil'] == 'validation') || ($_SESSION['profil'] == 'chef_pavillon') || ($_SESSION['profil'] == 'forclu')) { ?>
     <p class="lead">Espace Administration: Bienvenue! <br> <br> <span>
         (<?= $_SESSION['prenom'] . "  " . $_SESSION['nom'] ?>)
       </span></p>
@@ -148,7 +148,7 @@ if ($_SESSION['profil'] == 'user') {
                   if (getValidateLitBySuppleant($monTitulaire['num_etu'])) {
                     if (getValidateLitBySuppleant($_SESSION['num_etu'])) {
                       if (getValidatePaiementLitBySuppleant($monTitulaire['num_etu'])) {
-                        if (getValidateLogerBySuppleant($monTitulaire['num_etu'])) {
+                        if (getValidateLogerByTitulaire($monTitulaire['num_etu'])) {
                           if (getValidateLogerBySuppleant($_SESSION['num_etu'])) {
                             echo "VOUS AVEZ BIEN LOGER !!!";
                           } else {

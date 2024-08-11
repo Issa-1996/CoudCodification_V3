@@ -134,72 +134,93 @@ if (isset($_GET['erreurForclo'])) {
                     ?>
                         <form action="requestPaiement.php" method="POST">
                             <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" placeholder="Prenom : <?= $data['prenoms'] ?>" disabled>
+                                <div class="col-md-4 mb-3">
+                                    <input type="text" class="form-control" placeholder="<?= $data['prenoms'] ?>" disabled>
                                     <?php if (isset($data['id_val'])) { ?>
                                         <input class="form-control" name="valide" value="<?= $data['id_val'] ?>" style="visibility: hidden;">
                                     <?php } ?>
                                 </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" value="Nom : <?= $data['nom'] ?>" disabled>
+                                <div class="col-md-4">
+                                    <input class="form-control" placeholder="<?= $data['nom'] ?>" disabled>
                                 </div>
                             </div>
                             <div class="row" style="display: flex;justify-content: center;color:black;">
-                                <div class="col-md-3 mb-3">
-                                    <input class="form-control" placeholder="Faculté : <?= $data['etablissement'] ?>" disabled>
+                                <div class="col-md-4 mb-3">
+                                    <input class="form-control" placeholder="<?= $data['etablissement'] ?>" disabled>
                                 </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" placeholder="Classe : <?= $data['niveauFormation'] ?>" disabled>
+                                <div class="col-md-4">
+                                    <input class="form-control" placeholder="<?= $data['niveauFormation'] ?>" disabled>
                                 </div>
                             </div><br>
                             <?php
                             if (isset($_GET['statut']) && $_GET['statut'] == 'forclu') { ?>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
-                                        <input class="form-control" placeholder="Date limite :<?= dateFromat($data['dateTime_for']) ?>" disabled>
+                                    <div class="col-md-4 mb-3">
+                                        <input class="form-control" placeholder="<?= dateFromat($data['dateTime_for']) ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
-                                        <input class="form-control" placeholder="Nature : <?= $data['nature'] ?>" disabled>
+                                    <div class="col-md-4">
+                                        <input class="form-control" placeholder="<?= $data['nature'] ?>" disabled>
                                     </div>
                                 </div><br>
                             <?php } ?>
                             <?php if (isset($data['id_aff'])) { ?>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['numIdentite'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['campus'] ?>" disabled>
                                     </div>
                                 </div><br>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="<?= $data['pavillon'] ?>" disabled>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input class="form-control" placeholder="<?= $data['lit'] ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
-                                    <div class="col-md-3 mb-3">
-                                        <input class="form-control" placeholder="Lit choisi le : <?= dateFromat($data['dateTime_aff']) ?>" disabled>
+                                    <div class="col-md-4 mb-3">
+                                        <input class="form-control" placeholder="<?= dateFromat($data['dateTime_aff']) ?>" disabled>
                                     </div>
-                                    <div class="col-md-3 mb-3">
-                                        <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']) ?>" disabled>
+                                    <div class="col-md-4 mb-3">
+                                        <input class="form-control" placeholder="<?= dateFromat($data['dateTime_val']) ?>" disabled>
                                     </div>
                                 </div>
                                 <?php
-                                if ($data['migration_status'] == 'Migré dans paiement_caution') {
+                                if ($data['migration_status'] == 'Migré dans codif_paiement') {
                                 ?>
                                     <div class="row" style="display: flex;justify-content: center;color:black;">
-                                        <div class="col-md-3 mb-3">
-                                            <input class="form-control" placeholder="Payer le : <?= dateFromat($data['dateTime_paie']) ?>" disabled>
+                                        <div class="col-md-4 mb-3">
+                                            <input type="number" class="form-control" name="montant" placeholder="<?= $data['montant']; ?> Fr cfa" disabled>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <textarea class="form-control" placeholder="<?= $data['libelle']; ?>" name="libelle" disabled></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="display: flex;justify-content: center;color:black;">
+                                        <div class="col-md-4 mb-3">
+                                            <input class="form-control" placeholder="<?= dateFromat($data['dateTime_paie']) ?>" disabled>
                                         </div>
                                     </div>
                                     <a class="btn btn-secondary" href="/COUD/codif/profils/paiement/paiement.php" type="button">RETOUR</a>
                                 <?php
                                 } else {
                                 ?>
+                                    <div class="row" style="display: flex;justify-content: center;color:black;">
+                                        <div class="col-md-4 mb-3">
+                                            <input type="number" class="form-control" disabled  placeholder="Montant à payer : <?= getMontantPaye($data['num_etu']); ?> fr cfa">
+                                        </div>
+                                    </div>
+                                    <div class="row" style="display: flex;justify-content: center;color:black;">
+                                        <div class="col-md-4 mb-3">
+                                            <input type="number" class="form-control" name="montant" placeholder="Le montant recu">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <textarea class="form-control" placeholder="Dicriver le libelle ici..." name="libelle"></textarea>
+                                        </div>
+                                    </div>
                                     <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
                                 <?php }
                             } else { ?>

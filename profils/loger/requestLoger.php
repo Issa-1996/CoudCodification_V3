@@ -23,11 +23,10 @@ if (isset($_POST['numEtudiant'])) {
             $dataStudentConnect_sexe = $dataStudentConnect['sexe'];
             // $dataStudentConnect_moyenne = $dataStudentConnect['moyenne'];
             $dataStudentConnect_quota = getQuotaClasse($dataStudentConnect_classe, $dataStudentConnect_sexe)['COUNT(*)'];
-            // $dataStudentConnect_rang = getStatutByOneStudent($dataStudentConnect_quota, $dataStudentConnect_classe, $dataStudentConnect_sexe, $dataStudentConnect_moyenne)['rang'];
             // $dataStudentConnect_statut = getStatutByOneStudent($dataStudentConnect_quota, $dataStudentConnect_classe, $dataStudentConnect_sexe, $dataStudentConnect_moyenne)['statut'];
             $dataStudentConnect_statut = getOnestudentStatus($dataStudentConnect_quota, $dataStudentConnect_classe, $dataStudentConnect_sexe, $num_etu);
+            $dataStudentConnect_rang = $dataStudentConnect_statut['rang'];
 
-            // print_r($dataStudentConnect_statut);
             if ($dataStudentConnect_statut['statut'] == 'attributaire') {
                 // $dataStudent = getStatutByOneStudent($quota, $classe, $sexe, $moyenne);
                 $data = getOneByValidatePaiement($num_etu, $_SESSION['pavillon']);
@@ -44,27 +43,30 @@ if (isset($_POST['numEtudiant'])) {
                         header('Location: loger.php?erreurValider=Etudiant déja loger !!!&' . $queryString);
                     }
                 } else {
-                    header("location: loger.php?erreurNonTrouver=Aucun résultat trouvé !!!");
+                    header("location: loger.php?erreurNonTrouver=CETTE ETUDIANT N'EST PAS RESIDENT DU PAVILLON" . $_SESSION['pavillon'] . " !!!");
                 }
                 mysqli_free_result($data);
             } else if ($dataStudentConnect_statut['statut'] == 'suppleant') {
-                $monTitulaire = getStatutByOneStudentTitulaireOfSuppl($dataStudentConnect_quota, $dataStudentConnect_classe, $dataStudentConnect_sexe, $dataStudentConnect_rang);
+                $monTitulaire = getOneTitulaireBySuppleant($dataStudentConnect_quota, $dataStudentConnect_classe, $dataStudentConnect_sexe, $dataStudentConnect_rang);
                 $monTitulaire_numEtu = $monTitulaire['num_etu'];
-                if (getValidateLogerByStudentTitulaireOnSuppleant($monTitulaire_numEtu)) {
+                if (getValidateLogerByTitulaire($monTitulaire_numEtu)) {
                     if (getValidateLitBySuppleant($num_etu)) {
-                        if (getValidateLogerByStudentTitulaireOnSuppleant($num_etu)) {
-                            header('Location: loger.php?erreurValider=Suppleant, vous etes deja logé !!!');
+                        if (getValidateLogerBySuppleant($num_etu)) {
+                            $queryString = http_build_query(['data' => getValidateLogerBySuppleant($num_etu)]);
+                            header('Location: loger.php?statut=' . $dataStudentConnect_statut['statut'] . '&erreurValider=Suppleant déja loger !!!&' . $queryString);
                             exit();
+                            // exit();
+                            // header('Location: loger.php?erreurValider=Suppleant, vous etes deja logé !!!&');
+                            // header('Location: loger.php?erreurValider=Suppleant, vous etes deja logé !!!&');
                         } else {
                             $arrayValidateSuppleant = getValidateLitBySuppleant($num_etu);
-                            // print_r($arrayValidateSuppleant);
                             if ($arrayValidateSuppleant['etat_id_val'] == 'Migré') {
                                 $queryString = http_build_query(['data' => $arrayValidateSuppleant]);
-                                header('Location: loger.php?statut=' . $dataStudentConnect_statut . '&erreurValider=Suppleant déja loger !!!&' . $queryString);
+                                header('Location: loger.php?statut=' . $dataStudentConnect_statut['statut'] . '&erreurValider=Suppleant déja loger !!!&' . $queryString);
                                 exit();
                             } else if ($arrayValidateSuppleant['etat_id_val'] == 'Non migré') {
                                 $queryString = http_build_query(['data' => $arrayValidateSuppleant]);
-                                header("location: loger.php?statut=" . $dataStudentConnect_statut . '&' . $queryString);
+                                header("location: loger.php?statut=" . $dataStudentConnect_statut['statut'] . '&' . $queryString);
                                 exit();
                             }
                         }
@@ -90,7 +92,6 @@ if (isset($_POST['valide'])) {
         $user = $_SESSION['username'];
         // Appel de la fonction d'enregistrement du paiement de la caution
         $requete = setLoger($id_aff, $user);
-        print_r($requete);
         if ($requete == 1) {
             header('Location: loger.php?successValider=Logement titulaire Effectuer avec success !!!');
         }

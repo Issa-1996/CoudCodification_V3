@@ -18,6 +18,9 @@ if (!empty($_GET['username_user']) && !empty($_GET['password_user'])) {
         if ($row['profil_user'] == 'quota') {
             header('Location: /COUD/codif/profils/personnels/niveau.php');
             exit();
+        } else if ($row['profil_user'] == 'forclu') {
+            header('Location: /COUD/codif/profils/forclusion/forclore.php');
+            exit();
         } else if ($row['profil_user'] == 'validation') {
             header('Location: /COUD/codif/profils/validation/validation.php');
             exit();
