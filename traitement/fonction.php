@@ -39,6 +39,17 @@ function getAllEtablissement()
 }
 
 /********************************************************************************** 
+Fonction d'affichage de la liste des Niveau de formation, elle est appeler dans connecte.php 
+ ********************************************************************************* */
+function getAllNiveauFormation()
+{
+    global $connexion;
+    $requeteListeEtablissement = "SELECT DISTINCT (niveauFormation) FROM `codif_etudiant`";
+    $resultatRequeteEtablissement = mysqli_query($connexion, $requeteListeEtablissement);
+    return $resultatRequeteEtablissement;
+}
+
+/********************************************************************************** 
 Fonction d'affichage de la liste des departement, elle est appeler dans requette.php et affiché dans la page niveau.php
  ********************************************************************************* */
 function getAllDepartement($dataFaculte)
@@ -182,7 +193,7 @@ Comptez le nombre total d'options dans la base de données: pagination total lit
  ********************************************************************************* */
 function getAllLitPagination($sexe)
 {
-    global $connexion, $limit, $count_data_total;
+    global $connexion, $limit, $count_data_total, $offset;
     $count_queryTotalLit = "SELECT COUNT(*) as total FROM codif_lit WHERE codif_lit.sexe = '$sexe'";
     $count_resultat_total = mysqli_query($connexion, $count_queryTotalLit);
     if ($count_resultat_total) {
@@ -200,12 +211,12 @@ Comptez le nombre total d'options dans la base de données: pagination liste lit
  ********************************************************************************* */
 function getLitByStudent($classe, $sexe)
 {
-    global $connexion, $limit, $count_dataEtudiant;
+    global $connexion, $limit, $count_datas;
     $count_queryEtudiant = "SELECT COUNT(*) as total FROM codif_quota JOIN codif_lit ON codif_quota.id_lit_q = codif_lit.id_lit WHERE `NiveauFormation`='$classe' AND codif_lit.sexe = '$sexe'";
     $count_resultEtudiant = mysqli_query($connexion, $count_queryEtudiant);
     if ($count_resultEtudiant) {
-        $count_dataEtudiant = mysqli_fetch_assoc($count_resultEtudiant);
-        $total_pagesEtudiant = ceil($count_dataEtudiant['total'] / $limit);
+        $count_datas = mysqli_fetch_assoc($count_resultEtudiant);
+        $total_pagesEtudiant = ceil($count_datas['total'] / $limit);
         return $total_pagesEtudiant;
     } else {
         $total_pagesEtudiant = 1;
@@ -317,10 +328,10 @@ function getStudentChoiseLit($idEtu)
 /********************************************************************************** 
 Fonction d'affichage du lit deja choisie par l'etudiant connecté
  ********************************************************************************* */
-function getOneLitByStudent($idEtu)
+function getOneLitByStudent($num_etu)
 {
     global $connexion;
-    $requeteLitEtu = "SELECT codif_lit.* FROM codif_affectation JOIN codif_lit ON codif_affectation.id_lit = codif_lit.id_lit where `id_etu`='$idEtu'";
+    $requeteLitEtu = "SELECT codif_lit.* FROM codif_affectation JOIN codif_lit ON codif_affectation.id_lit = codif_lit.id_lit JOIN codif_etudiant ON codif_etudiant.id_etu = codif_affectation.id_etu where codif_etudiant.num_etu='$num_etu'";
     $resultatReqLitEtu = $connexion->query($requeteLitEtu);
     return $resultatReqLitEtu;
 }
@@ -384,8 +395,8 @@ Fonction de filtre de la liste des lits
  ********************************************************************************* */
 function setFiltre($filter, $sexe)
 {
-    global $connexion;
-    $sqlFilter = "SELECT codif_lit.*, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe'";
+    global $connexion, $limit, $offset;
+    $sqlFilter = "SELECT codif_lit.*, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe' LIMIT $limit OFFSET $offset";
     if ($filter) {
         $resultatRequeteTotalLit = mysqli_query($connexion, $sqlFilter);
         return $resultatRequeteTotalLit;
@@ -393,13 +404,12 @@ function setFiltre($filter, $sexe)
 }
 
 /**********************************************************************************
- * *********************************************************************************
- */
-// Fonction du pagination du filtre, cette fonction sera appeler dans la page listeLits.php
+ Fonction du pagination du filtre, cette fonction sera appeler dans la page listeLits.php
+ **********************************************************************************/
 function getPaginationFiltre($filter, $sexe)
 {
     global $connexion, $limit, $offset, $count_data_total;
-    $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe' LIMIT $limit OFFSET $offset";
+    $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe'";
     $count_resultat_total = mysqli_query($connexion, $count_queryTotalLit);
     if ($count_resultat_total) {
         $count_data_total = mysqli_fetch_assoc($count_resultat_total);
@@ -416,12 +426,13 @@ Fonction du pagination du filtre, cette fonction sera appeler dans la page liste
  ********************************************************************************* */
 function getPaginationFiltreClasse($filter, $sexe)
 {
-    global $connexion, $limit, $offset, $count_data_total;
-    $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe' LIMIT $limit OFFSET $offset";
+    global $connexion, $limit, $offset, $count_datas;
+    // $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE NiveauFormation='Licence 1 en Energies Renouvelables' AND codif_lit.pavillon='$filter' AND codif_lit.sexe = '$sexe'";
+    $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE NiveauFormation='Licence 1 en Energies Renouvelables' AND codif_lit.pavillon='$filter' AND codif_lit.sexe = '$sexe';";
     $count_resultat_total = mysqli_query($connexion, $count_queryTotalLit);
     if ($count_resultat_total) {
-        $count_data_total = mysqli_fetch_assoc($count_resultat_total);
-        $total_lit_pages = ceil($count_data_total['total'] / $limit);
+        $count_datas = mysqli_fetch_assoc($count_resultat_total);
+        $total_lit_pages = ceil($count_datas['total'] / $limit);
         return $total_lit_pages;
     } else {
         $total_lit_pages = 1;
@@ -453,7 +464,7 @@ function personnelConnect($username)
 
 /********************************************************************************** 
 Fonction pour récupérer les informations de l'étudiant pour le paiement de la caution
- ********************************************************************************* */
+********************************************************************************* */
 function infoStudentPaie($numEtudiant)
 {
     global $connexion;
@@ -720,6 +731,17 @@ function getStatutStudentByQuota($quota, $classe, $sexe)
     ce.sessionId, 
     ce.moyenne, 
     ce.niveauFormation,
+    ce.etablissement,
+    ce.departement,
+    ce.dateNaissance,
+    ce.lieuNaissance,
+    ce.sexe,
+    ce.nationalite,
+    ce.numIdentite,
+    ce.typeEtudiant,
+    ce.niveau,
+    ce.email_perso,
+    ce.email_ucad,
     COALESCE(ranks.rang, 'N/A') AS rang, 
     CASE 
         WHEN cf.id_etu IS NOT NULL THEN 'forclus' 
@@ -760,12 +782,23 @@ function getStatutByOneStudentTitulaireOfSuppl($quota, $classe, $sexe, $rang)
 /********************************************************************************** 
 fonction d'affichage de la table delai
  ********************************************************************************* */
-function getAllDelai($nature)
+function getAllDelai($nature, $faculte)
 {
     global $connexion;
-    $requete =  "SELECT * FROM codif_delai where nature ='$nature'";
+    $requete =  "SELECT * FROM codif_delai where nature ='$nature' AND faculte ='$faculte'";
     $resultRequete = mysqli_query($connexion, $requete);
     return $resultRequete->fetch_assoc();
+}
+
+/********************************************************************************** 
+fonction d'ajout dans la table delai
+ ********************************************************************************* */
+function addDelai($nature, $faculte, $date)
+{
+    global $connexion;
+    $requete =  "INSERT INTO codif_delai (`nature`, `faculte`,`data_limite`) VALUES ('$nature', '$faculte', '$date')";
+    $add = $connexion->prepare($requete);
+    $add->execute();
 }
 
 /********************************************************************************** 
@@ -826,7 +859,7 @@ Verifier si l'etudiant est deja forclu
 function getIsForclu($num_etu)
 {
     global $connexion;
-    $studentValidate = "SELECT * FROM `codif_forclusion` JOIN codif_etudiant ON codif_etudiant.id_etu =codif_forclusion.id_etu JOIN codif_delai ON codif_delai.id_delai = codif_forclusion.id_del WHERE codif_etudiant.num_etu = '$num_etu'";
+    $studentValidate = "SELECT * FROM `codif_forclusion` JOIN codif_etudiant ON codif_etudiant.id_etu =codif_forclusion.id_etu WHERE codif_etudiant.num_etu = '$num_etu'";
     $infoValite = mysqli_query($connexion, $studentValidate);
     $data = $infoValite->fetch_assoc();
     return $data;
@@ -848,7 +881,7 @@ Fonction permet l'enregistrement forclusions manuel
  ********************************************************************************* */
 function addForcloreManuel($id_etu, $motif, $username_user)
 {
-    addArchiveManuel($id_etu, $username_user);
+    addArchive($id_etu, $username_user);
     global $connexion;
     deleteValidation($id_etu);
     deleteAffectation($id_etu);
@@ -910,36 +943,35 @@ function getOneTitulaireBySuppleant($quota, $classe, $sexe, $rang)
 }
 
 /* * ******************************************************************************** 
-Fonction stocké toutes les informations de l'etudiant forclu
+Fonction stocké toutes les informations de l'etudiant forclu automatique
 ********************************************************************************* */
 function addArchive($id_etu, $username_user = null)
 {
+    global $connexion;
+
     try {
-        $affectation = getLitStudentForclu($id_etu);
-        $id_lit = $affectation['id_lit'];
-        $date_choix = $affectation['dateTime_aff'];
-        $validation = getDateValStudentForclu($id_etu);
-        $date_val = $validation['dateTime_val'];
-        global $connexion;
-        $req_add_archive = "INSERT INTO codif_archive (`id_etu`, `dateTime_sys`, `username_user`) VALUES ('$id_etu', NOW(), '$username_user')";
+        // Récupérer les informations
+        if ($affectation = getLitStudentForclu($id_etu)) {
+            $id_lit = $affectation['id_lit'];
+            $date_choix = $affectation['dateTime_aff'];
+        } else {
+            $id_lit = null;
+            $date_choix = null;
+        }
+        if ($validation = getDateValStudentForclu($id_etu)) {
+            $date_val = $validation['dateTime_val'];
+        } else {
+            $date_val = null;
+        }
+        // Préparer et exécuter la requête d'insertion
+        $req_add_archive = "INSERT INTO codif_archive (`id_etu`, `id_lit`, `date_choix`, `date_val`, `dateTime_sys`, `username_user`) VALUES (?, ?, ?, ?, NOW(), ?)";
         $insert_archive = $connexion->prepare($req_add_archive);
+        $insert_archive->bind_param("iisss", $id_etu, $id_lit, $date_choix, $date_val, $username_user);
         return $insert_archive->execute();
     } catch (mysqli_sql_exception $e) {
-        echo $e->getMessage();
-    }
-}
-/* * ******************************************************************************** 
-Fonction stocké toutes les informations de l'etudiant forclu manuellement
-********************************************************************************* */
-function addArchiveManuel($id_etu, $username_user = null)
-{
-    try {
-        global $connexion;
-        $req_add_archive = "INSERT INTO codif_archive (`id_etu`, `dateTime_sys`, `username_user`) VALUES ('$id_etu', NOW(), '$username_user')";
-        $insert_archive = $connexion->prepare($req_add_archive);
-        return $insert_archive->execute();
-    } catch (mysqli_sql_exception $e) {
-        echo $e->getMessage();
+        echo "Erreur SQL : " . $e->getMessage();
+    } catch (Exception $e) {
+        echo "Erreur : " . $e->getMessage();
     }
 }
 
@@ -981,7 +1013,8 @@ Fonction pour calculer le caution et le nombre de mois a payer
 ********************************************************************************* */
 function getMontantPaye($numEtudiant)
 {
-    $date_debut = DateTime::createFromFormat('Y-m-d', dateFromat(getAllDelai("depart")['data_limite']));
+    $dateDepart = getAllDelai("depart", info($numEtudiant)[5]);
+    $date_debut = DateTime::createFromFormat('Y-m-d', dateFromat($dateDepart['data_limite']));
     $date_sys = DateTime::createFromFormat('Y-m-d', dateFromat(date("Y-n-j")));
     $nbr_mois = $date_debut->diff($date_sys);
     $nbr_mois = $nbr_mois->format('%m');
@@ -1004,4 +1037,41 @@ function getPaiementWithDateInterval($date_debut, $date_fin)
     $sql = "SELECT ce.num_etu, ce.nom, ce.prenoms, pc.dateTime_paie, pc.montant FROM codif_etudiant ce JOIN codif_affectation a ON ce.id_etu = a.id_etu JOIN codif_validation vl ON a.id_aff = vl.id_aff JOIN codif_paiement pc ON pc.id_val = vl.id_val WHERE pc.dateTime_paie BETWEEN '$date_debut' AND '$date_fin'";
     $result = mysqli_query($connexion, $sql);
     return $result->fetch_assoc();
+}
+
+//Fonction permettant de recuperer toustes les infos de la table etudiant
+function info($login)
+{
+    //Recherche des infos de l'etudiant
+    global $connexion;
+    $rr = "select * from codif_etudiant where num_etu='$login'";
+    $ee = mysqli_query($connexion, $rr);
+    $ss = mysqli_fetch_array($ee);
+
+    $numIdentite = $ss['numIdentite'];
+    $dateNaissance = $ss['dateNaissance'];
+    $lieuNaissance = $ss['lieuNaissance'];
+    $nom = $ss['nom'];
+    $prenoms = $ss['prenoms'];
+    $etablissement = $ss['etablissement'];
+    $departement = $ss['departement'];
+    $typeEtudiant = $ss['typeEtudiant'];
+    $sessionId = $ss['sessionId'];
+    $niveauFormation = $ss['niveauFormation'];
+    $moyenne = $ss['moyenne'];
+    $sexe = $ss['sexe'];
+    $email = $ss['email_ucad'];
+    $email2 = $ss['email_perso'];
+    ///////////Recuperer le 1er caractere de la cni pour determiner le sexe	
+    $sexeL = "";
+    if ($sexe == "G" or $sexe == "M") {
+        $sexeL = "Garçons";
+    }
+    if ($sexe == "F") {
+        $sexeL = "Filles";
+    }
+    ////////////Fin
+
+    return array($numIdentite, $dateNaissance, $lieuNaissance, $nom, $prenoms, $etablissement, $departement, $niveauFormation, $moyenne, $typeEtudiant, $sessionId, $sexe, $sexeL, $email, $email2);
+    //fin
 }

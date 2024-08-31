@@ -1,13 +1,10 @@
 <?php
-// Démarre une nouvelle session ou reprend une session existante
 session_start();
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-// Supprimer une variable de session spécifique
 unset($_SESSION['classe']);
-// Sélectionnez les options à partir de la base de données avec une pagination
 include('../../traitement/fonction.php');
 include('../../traitement/requete.php');
 ?>

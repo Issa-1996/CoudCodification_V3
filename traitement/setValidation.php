@@ -1,5 +1,4 @@
 <?php
-// Démarre une nouvelle session ou reprend une session existante
 session_start();
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');

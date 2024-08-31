@@ -1,21 +1,31 @@
 <?php
-// Démarre une nouvelle session ou reprend une session existante
 session_start();
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-//connexion à la base de données
 require('../../traitement/fonction.php');
-// Comptez le nombre total d'options dans la base de données: pagination liste lits d'une classe selon l'etudiant connecté dans la page codifier.php
 $total_pagesEtudiant = getLitByStudent($_SESSION['classe'], $_SESSION['sexe']);
-// Liste des chambres deja affecter a une classe selon le niveau de la classe
 $resultRequeteLitClasseEtudiant = getLitValideByClasse($_SESSION['classe'], $_SESSION['sexe']);
 if (isset($_GET['erreurLitCodifier'])) {
     $_SESSION['erreurLitCodifier'] = $_GET['erreurLitCodifier'];
 } else {
     $_SESSION['erreurLitCodifier'] = '';
 }
+
+if (isset($_POST['filter']) && $_POST['filter']) {
+    $_SESSION['filter'] = $_POST['filter'];
+}
+
+if (isset($_SESSION['filter'])) {
+    // $_SESSION['filter'] = isset($_POST['filter']) ? $_POST['filter'] : '';
+    $resultRequeteLitClasseEtudiant = setFiltre($_SESSION['filter'], $_SESSION['sexe']);
+    $total_pagesEtudiant = getPaginationFiltreClasse($_SESSION['filter'], $_SESSION['sexe']);
+} else {
+    $total_pagesEtudiant = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
+}
+
+$resultatRequetePavillonClasse = getPavillonOneByNiveau($_SESSION['classe'], $_SESSION['sexe']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -49,10 +59,22 @@ if (isset($_GET['erreurLitCodifier'])) {
             </div>
         </div>
         <div class="row">
+            <div class="col-md-2">
+                <form class="d-flex" role="search" method="POST" action="codifier.php" id="filterForm">
+                    <select class="form-control me-2" placeholder="Search" aria-label="Search" name="filter" id="filter">
+                        <option disabled selected>FILTRE PAVILLONS</option>
+                        <?php
+                        while ($rowPavillon = mysqli_fetch_array($resultatRequetePavillonClasse)) { ?>
+                            <option value="<?= $rowPavillon['pavillon']; ?>"><?= $rowPavillon['pavillon']; ?></option>
+                        <?php } ?>
+                    </select>
+                </form>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12">
                 <ul class="options">
                     <form id="myForm" action="traitementCodifier.php" method="GET">
-                        <!-- Affichez chaque option dans une liste -->
                         <div class='options-container'>
                             <?php
                             while ($row = mysqli_fetch_array($resultRequeteLitClasseEtudiant)) {
@@ -78,7 +100,6 @@ if (isset($_GET['erreurLitCodifier'])) {
                                 <?php
                                 }
                             }
-                            // Fermeture de la dernière colonne si le nombre total d'options n'est pas un multiple de 4
                             if ($counter % 10 != 0) { ?>
                         </div>
 
@@ -92,18 +113,16 @@ if (isset($_GET['erreurLitCodifier'])) {
                 <div class="col-md-2">
                     <select class='form-select' onchange='location = this.value;'>
                         <?php
-                        // Affichage de la liste déroulante de pagination
                         for ($i = 1; $i <= $total_pagesEtudiant; $i++) {
                             $offset_value = ($i - 1) * $limit;
                             $selected = ($i == $page) ? "selected" : "";
                             $lower_bound = $offset_value + 1;
-                            $upper_bound = min($offset_value + $limit, $count_dataEtudiant['total']);
+                            $upper_bound = min($offset_value + $limit, $count_datas['total']);
                             echo "<option value='codifier.php?page=$i' $selected>De $lower_bound à $upper_bound</option>";
                         } ?>
                     </select>
                 </div>
                 <?php
-                // Fermez la connexion
                 mysqli_close($connexion);
                 ?>
                 <div class="col-md-2">

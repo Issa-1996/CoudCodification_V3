@@ -24,4 +24,3 @@ if (isset($_GET) && count($_GET) > 0) {
     header('Location: ../profils/personnels/detailsLits.php?erreurLitDeaffecter=VEUILLER SELECTIONNER UN LIT !!!');
     exit();
 }
-// require_once('close.php');

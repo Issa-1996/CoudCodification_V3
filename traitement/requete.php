@@ -1,25 +1,19 @@
 <?php
-// Verifier la session si elle est actif, sinon on redirige vers la racine
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-// Verifier si la session stock toujours la valeur du niveau de la classe, sinon on l'initialise
 if (isset($_SESSION['classe'])) {
     $classe = $_SESSION['classe'];
 } else {
     $classe = "";
 }
-// appelle la page fonction.php
 require_once(__DIR__ . '/fonction.php');
-
-// Declaration des variables et tableaux
 $tableauDataFaculte = [];
 $tableauDataNiveauFormation = [];
 $erreurClasse = "";
 $messageErreurFaculte = "";
 $messageErreurDepartement = "";
-
 // Appel de la fonction getAllEtablissement() dans fonction.php, celle-ci affiche la liste de tous les etablissements
 $dataEtablissement = getAllEtablissement();
 if (isset($_GET['fac']) && !empty($_GET['fac'])) {
@@ -47,14 +41,11 @@ if (isset($_GET['fac']) && !empty($_GET['fac'])) {
 }
 // Liste des chambres deja affecter a une classe selon le niveau de la classe
 $resultatRequeteLitClasse = getLitOneByNiveau($classe, $_SESSION['sexe']);
-
 // Liste des pavillons deja affecter a une classe selon le niveau de la classe, elle sera appeler dans la page detailsLits.php (elle sert de filtre)
 $resultatRequetePavillonClasse = getPavillonOneByNiveau($classe, $_SESSION['sexe']);
 // Liste des lits a valider selon la classe, elle sera valider par le personnels
 $resultatRequeteLitClasseByValidePerso = getLitOneByNiveauFromPersonnel($classe, $_SESSION['sexe']);
 // affichage de toutes les lits de la table cofif_lit avec les option migré et non migré
 $resultatRequeteTotalLit = getAllLit($_SESSION['sexe']);
-
-
 //Affiché la liste total des pavillon
 $resultatRequetePavillon = getAllPavillon($_SESSION['sexe']);

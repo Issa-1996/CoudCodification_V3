@@ -12,10 +12,13 @@ include('../../traitement/fonction.php');
 connexionBD();
 include('../../traitement/requete.php');
 
-if (isset($_POST['filter'])) {
-    $filter = isset($_POST['filter']) ? $_POST['filter'] : '';
-    $resultatRequeteTotalLit = setFiltre($filter, $_SESSION['sexe']);
-    $total_lit_pages = getPaginationFiltre($filter, $_SESSION['sexe']);
+if (isset($_POST['filter']) && $_POST['filter']) {
+    $_SESSION['filter'] = $_POST['filter'];
+}
+
+if (isset($_SESSION['filter'])) {
+    $resultatRequeteTotalLit = setFiltre($_SESSION['filter'], $_SESSION['sexe']);
+    $total_lit_pages = getPaginationFiltre($_SESSION['filter'], $_SESSION['sexe']);
 } else {
     $total_lit_pages = getAllLitPagination($_SESSION['sexe']);
 }
@@ -40,7 +43,6 @@ if (isset($_GET['successLitAffecter'])) {
     <title>COUD: CODIFICATION</title>
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/styles.css">
-    <!-- script================================================== -->
     <script src="../assets/js/modernizr.js"></script>
     <script src="../assets/js/pace.min.js"></script>
     <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
@@ -65,7 +67,7 @@ if (isset($_GET['successLitAffecter'])) {
                             <?= $_SESSION['erreurLitAffecter']; ?>
                         </div>
                     </div>
-                <?php }else if ($_SESSION['successLitAffecter']) { ?>
+                <?php } else if ($_SESSION['successLitAffecter']) { ?>
                     <div class="col-md-6">
                         <div class="alert alert-success" role="alert">
                             <?= $_SESSION['successLitAffecter']; ?>
@@ -124,7 +126,6 @@ if (isset($_GET['successLitAffecter'])) {
                 <div class="col-md-2">
                     <select class='form-select' onchange='location = this.value;'>
                         <?php
-                        // Affichage de la liste déroulante de pagination
                         for ($i = 1; $i <= $total_lit_pages; $i++) {
                             $offset_value = ($i - 1) * $limit;
                             $selected = ($i == $page) ? "selected" : "";

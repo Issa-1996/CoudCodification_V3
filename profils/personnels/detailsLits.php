@@ -8,23 +8,22 @@ if (empty($_SESSION['classe'])) {
     header('location: /COUD/codif/profils/personnels/niveau.php');
     exit();
 }
-//connexion à la base de données
 include('../../traitement/fonction.php');
 connexionBD();
-// Sélectionnez les options à partir de la base de données avec une pagination
 include('../../traitement/requete.php');
 
 
-if (isset($_POST['filter'])) {
-    $filter = isset($_POST['filter']) ? $_POST['filter'] : '';
-    $resultatRequeteLitClasse = setFiltre($filter, $_SESSION['sexe']);
-    $total_pagess = getPaginationFiltreClasse($filter, $_SESSION['sexe']);
-    print_r(getPaginationFiltreClasse($filter, $_SESSION['sexe']));
+if (isset($_POST['filter']) && $_POST['filter']) {
+    $_SESSION['filter'] = $_POST['filter'];
+}
+
+if (isset($_SESSION['filter'])) {
+    // $_SESSION['filter'] = isset($_POST['filter']) ? $_POST['filter'] : '';
+    $resultatRequeteLitClasse = setFiltre($_SESSION['filter'], $_SESSION['sexe']);
+    $total_pagess = getPaginationFiltreClasse($_SESSION['filter'], $_SESSION['sexe']);
 } else {
     $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
 }
-// Comptez le nombre total d'options dans la base de données details lits affecter (quotas)
-// $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
 $countIn = 0;
 if (isset($_GET['erreurLitDeaffecter'])) {
     $_SESSION['erreurLitDeaffecter'] = $_GET['erreurLitDeaffecter'];
@@ -44,9 +43,7 @@ if (isset($_GET['successLitDeaffecter'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COUD: CODIFICATION</title>
-    <!-- CSS================================================== -->
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <!-- script================================================== -->
     <script src="../../assets/js/modernizr.js"></script>
     <script src="../../assets/js/pace.min.js"></script>
     <link rel="stylesheet" href="../../assets/css/styles.css">
@@ -70,7 +67,7 @@ if (isset($_GET['successLitDeaffecter'])) {
                             <?= $_SESSION['erreurLitDeaffecter']; ?>
                         </div>
                     </div>
-                <?php }else if ($_SESSION['successLitDeaffecter']) { ?>
+                <?php } else if ($_SESSION['successLitDeaffecter']) { ?>
                     <div class="col-md-6">
                         <div class="alert alert-success" role="alert">
                             <?= $_SESSION['successLitDeaffecter']; ?>
@@ -94,11 +91,9 @@ if (isset($_GET['successLitDeaffecter'])) {
         </div>
         <div class="row">
             <div class="col-md-12">
-                <!-- <ul class="options"> -->
                 <form id="myForm" action="../../traitement/removeQuotas.php" method="GET">
                     <div class='options-container'>
                         <?php
-                        // print_r($resultatRequeteLitClasse->num_rows);
                         while ($row = mysqli_fetch_array($resultatRequeteLitClasse)) {
                             if ($row['statut_migration'] == 'Migré dans les deux') {
                                 $countIn++;
@@ -125,7 +120,6 @@ if (isset($_GET['successLitDeaffecter'])) {
                             <?php
                             }
                         }
-                        // Fermeture de la dernière colonne si le nombre total d'options n'est pas un multiple de 4
                         if ($counter % 9 != 0) { ?>
                     </div>
                 <?php
@@ -146,7 +140,6 @@ if (isset($_GET['successLitDeaffecter'])) {
                 <div class="col-md-2">
                     <select class='form-select' onchange='location = this.value;'>
                         <?php
-                        // Affichage de la liste déroulante de pagination
                         for ($i = 1; $i <= $total_pagess; $i++) {
                             $offset_value = ($i - 1) * $limit;
                             $selected = ($i == $page) ? "selected" : "";
@@ -157,7 +150,6 @@ if (isset($_GET['successLitDeaffecter'])) {
                     </select>
                 </div>
                 <?php
-                // Fermez la connexion
                 mysqli_close($connexion);
                 ?>
                 <?php if ($countIn == 0) { ?>
@@ -167,7 +159,6 @@ if (isset($_GET['successLitDeaffecter'])) {
                 <?php } ?>
             </div>
             </form>
-            <!-- </ul> -->
         </div>
     </div>
     <script src="../../assets/js/jquery-3.2.1.min.js"></script>
