@@ -1,13 +1,10 @@
 <?php
-// Démarre une nouvelle session ou reprend une session existante
 session_start();
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-//connexion à la base de données
 require('../../traitement/fonction.php');
-// Sélectionnez les options à partir de la base de données avec une pagination
 require('../../traitement/requete.php');
 ?>
 <!DOCTYPE html>
@@ -17,7 +14,6 @@ require('../../traitement/requete.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COUD: CODIFICATION </title>
-    <!-- <link rel="stylesheet" href="../personnels/styles.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
@@ -25,9 +21,7 @@ require('../../traitement/requete.php');
     <style>
         .section {
             max-height: 400px;
-            /* Hauteur maximale pour chaque section */
             overflow-y: auto;
-            /* Activer le défilement vertical si le contenu dépasse la hauteur maximale */
         }
 
         label {
@@ -43,7 +37,6 @@ require('../../traitement/requete.php');
         <form action="traitementPolitique.php" method="get">
             <div id="sections">
                 <div class="section">
-                    <!-- <p><strong>Section 1 : Collecte des données</strong></p> -->
                     <p>Description de la collecte des données...</p>
                     <p>
                         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat repellendus laborum sit assumenda nisi necessitatibus unde, nulla exercitationem cupiditate aliquid incidunt eum adipisci amet accusantium ratione illo quasi! Totam, quasi.
@@ -101,23 +94,19 @@ require('../../traitement/requete.php');
                         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita architecto rerum commodi, sapiente nemo dolores modi autem quidem laborum non sit facilis perspiciatis, eum nobis itaque accusantium facere? Neque, nihil!
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur accusantium quidem quia? Itaque, eum iure? Possimus minima, quidem quisquam excepturi error laborum, nulla sequi neque animi reprehenderit, cupiditate ratione quia?
                     </p>
-                    <!-- Ajoutez autant de contenu que nécessaire pour cette section -->
                     <input type="checkbox" id="section1" name="section1">
                     <label for="section1">Section 1 : Collecte des données</label>
                     <div class="section">
                     </div>
                 </div>
-                <!-- Ajoutez autant de sections que nécessaire -->
             </div>
             <button type="submit" id="acceptButton" disabled>J'accepte</button>
         </form>
     </div>
     <script>
-        // Récupérer toutes les cases à cocher
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const acceptButton = document.getElementById('acceptButton');
 
-        // Vérifier si toutes les cases sont cochées
         function checkAllCheckboxes() {
             let allChecked = true;
             checkboxes.forEach(checkbox => {
@@ -125,9 +114,8 @@ require('../../traitement/requete.php');
                     allChecked = false;
                 }
             });
-            acceptButton.disabled = !allChecked; // Activer le bouton si toutes les cases sont cochées
+            acceptButton.disabled = !allChecked;
         }
-        // Ajouter des écouteurs d'événements pour les cases à cocher
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', checkAllCheckboxes);
         });

@@ -47,15 +47,15 @@ include('traitement/connect.php');
               <strong>VEUILLEZ RENSEIGNER LES CHAMPS</strong>
             </center>
             <!-- <span class="login-error"> -->
-              <div class="row" style="display:flex; justify-content: center;">
-                <?php if (isset($_GET['error'])) { ?>
-                  <div class="col-md-3">
-                    <div class="alert alert-danger" role="alert">
-                      <?= $_GET['error']; ?>
-                    </div>
+            <div class="row" style="display:flex; justify-content: center;">
+              <?php if (isset($_GET['error'])) { ?>
+                <div class="col-md-3">
+                  <div class="alert alert-danger" role="alert">
+                    <?= $_GET['error']; ?>
                   </div>
-                <?php } ?>
-              </div><br>
+                </div>
+              <?php } ?>
+            </div><br>
             <!-- </span> -->
             <fieldset>
               <div class="form-field">
@@ -88,9 +88,9 @@ include('traitement/connect.php');
       </div>
     </div>
   </div>
-  <!-- <div id="preloader">
+  <div id="preloader">
     <div id="loader"></div>
-  </div> -->
+  </div>
   <!-- Java Script================================================== -->
   <script src="assets/js/script.js"></script>
   <script src="assets/js/jquery-3.2.1.min.js"></script>

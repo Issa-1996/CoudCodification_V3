@@ -4,6 +4,22 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
+require_once('../../traitement/fonction.php');
+
+
+if (isset($_GET['erreurNum_etu'])) {
+    $_SESSION['erreurNum_etu'] = $_GET['erreurNum_etu'];
+} else {
+    $_SESSION['erreurNum_etu'] = '';
+}
+
+if (isset($_GET['data'])) {
+    $tableau_data_etudiant = $_GET['data'];
+} else {
+    $num_etu = $_SESSION['num_etu'];
+    $quota = getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)'];
+    $tableau_data_etudiant = getAllDatastudentStatus($quota, $_SESSION['classe'], $_SESSION['sexe']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,200 +38,160 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
 
 <body>
     <?php
-    include('../../head.php');
-
-    $quota = getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)'];
-    // $listeClasse = getStatutStudentByQuota($quota, $_SESSION['classe'], $_SESSION['sexe']);
-    // $listeTitulaire = getStatutStudentByQuota($quota, $_SESSION['classe'], $_SESSION['sexe']);
-    $listeDelai1 = getAllDelai('choix');
-    $listeDelai2 = getAllDelai('validation');
-    $listeDelai3 = getAllDelai('paiement');
-    $date_limite_choix = dateFromat($listeDelai1['data_limite']);
-    $date_limite_val = dateFromat($listeDelai2['data_limite']);
-    $date_limite_paye = dateFromat($listeDelai3['data_limite']);
-    $date_sys = dateFromat(date('Y-m-d'));
-
-    // Appel de la fonction liste total d'etudiant avec leurs status
-    $tableau_data_etudiant = getAllDatastudentStatus($quota, $_SESSION['classe'], $_SESSION['sexe']);
-    if ($date_sys >= $date_limite_choix) {
-        if ($date_sys < $date_limite_val) {
-            $forclos = getAllForclu();
-            if ($forclos->num_rows != 0) {
-                $compt = 0;
-                while ($row = mysqli_fetch_array($forclos)) {
-                    $dateFor = dateFromat($row['dateTime_for']);
-                    if (($row['type'] == 'auto')) {
-                        if ($dateFor >= $date_limite_choix) {
-                            if ($row['nature'] == 'choix') {
-                                $compt++;
-                            }
-                        }
-                    }
-                }
-                if ($compt == 0) {
-                    for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                        if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') {
-                            $choix_lit = getChoixLitByStudent($tableau_data_etudiant[$i]['num_etu']);
-                            if ($choix_lit == "VEUILLER CHOISIR UN LIT POUR DEMMARRER VOTRE CODIFICATION, <a href='/coud/codif/profils/etudiants/codifier.php'>CLIQUER ICI</a>") {
-                                addForclu($tableau_data_etudiant[$i]['id_etu'], $listeDelai1['id_delai']);
-                            }
-                        }
-                    }
-                }
-            } else {
-                for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                    if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') {
-                        $choix_lit = getChoixLitByStudent($tableau_data_etudiant[$i]['num_etu']);
-                        if ($choix_lit == "VEUILLER CHOISIR UN LIT POUR DEMMARRER VOTRE CODIFICATION, <a href='/coud/codif/profils/etudiants/codifier.php'>CLIQUER ICI</a>") {
-                            addForclu($tableau_data_etudiant[$i]['id_etu'], $listeDelai1['id_delai']);
-                        }
-                    }
-                }
-            }
-        }
-        if ($date_sys >= $date_limite_val) {
-            if ($date_sys < $date_limite_paye) {
-                $forclos_validation = getAllForclu();
-                if ($forclos_validation->num_rows != 0) {
-                    $compt = 0;
-                    while ($row = mysqli_fetch_array($forclos_validation)) {
-                        $dateFor = dateFromat($row['dateTime_for']);
-                        if (($row['type'] == 'auto')) {
-                            if ($dateFor >= $date_limite_choix) {
-                                if ($row['nature'] == 'validation') {
-                                    $compt++;
-                                }
-                            }
-                        }
-                    }
-                    if ($compt == 0) {
-                        for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                            if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') {
-                                $choix_lit = getValidateLitByStudent2($tableau_data_etudiant[$i]['num_etu']);
-                                if ($choix_lit == "VEUILLEZ-VOUS RAPPROCHER DU SERVICE DE L'HEBERGEMENT POUR COMPLETER VOTRE CODIFICATION !!!") {
-                                    addForclu($tableau_data_etudiant[$i]['id_etu'], $listeDelai2['id_delai']);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                        if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') {
-                            $choix_lit = getValidateLitByStudent2($tableau_data_etudiant[$i]['num_etu']);
-                            if ($choix_lit == "VEUILLEZ-VOUS RAPPROCHER DU SERVICE DE L'HEBERGEMENT POUR COMPLETER VOTRE CODIFICATION !!!") {
-                                addForclu($tableau_data_etudiant[$i]['id_etu'], $listeDelai2['id_delai']);
-                            }
-                        }
-                    }
-                }
-            }
-            if ($date_sys >= $date_limite_paye) {
-                $forclos_paiement = getAllForclu();
-                if ($forclos_paiement->num_rows != 0) {
-                    $compt = 0;
-                    while ($row = mysqli_fetch_array($forclos_paiement)) {
-                        $dateFor_paiement = dateFromat($row['dateTime_for']);
-                        if (($row['type'] == 'auto')) {
-                            if ($dateFor_paiement >= $date_limite_paye) {
-                                if ($row['nature'] == 'paiement') {
-                                    $compt++;
-                                }
-                            }
-                        }
-                    }
-                    if ($compt == 0) {
-                        for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                            if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') {
-                                $choix_lit = getValidatePaiementLitBySuppleant($tableau_data_etudiant[$i]['num_etu']);
-                                if (!$choix_lit) {
-                                    addForclu($tableau_data_etudiant[$i]['id_etu'], $listeDelai3['id_delai']);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                        if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') {
-                            $choix_lit = getValidatePaiementLitBySuppleant($tableau_data_etudiant[$i]['num_etu']);
-                            if (!$choix_lit) {
-                                addForclu($tableau_data_etudiant[$i]['id_etu'], $listeDelai3['id_delai']);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    ?>
+    include('../../head.php'); ?>
     <div class="container">
-        <!-- <h4>Le quota de votre classe <b><?= $_SESSION['classe']; ?> / <?= $_SESSION['sexe']; ?></b> est de: <?= getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)']; ?> lits.</h4> -->
+        <div class="row">
+            <div class="col-md-4">
+                <form class="d-flex" role="search" method="POST" action="search_etudiant.php" id="filterForm">
+                    <input type="text" class="form-control me-2" placeholder="N° ETUDIANT" aria-label="Search" name="search" id="search">
+                    <input type="submit" class="btn btn-success" value="Rechercher">
+                </form>
+                <?php if ($_SESSION['erreurNum_etu']) { ?>
+                    <div class="text-danger" role="alert">
+                        <h4>
+                            <?= $_SESSION['erreurNum_etu']; ?>
+                        </h4>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
         <?php
+
         if (isset($_SESSION['lit_choisi']) && $_SESSION['lit_choisi'] != '') {
         ?>
             <div class="alert alert-success" role="alert">
                 Vous avez réservé le lit: <?= $_SESSION['lit_choisi'] ?>
             </div>
-            <!-- Appliqué la forclusion -->
-            <!-- <h1><?= getValidateLogerByStudent($_SESSION['num_etu']) ?></h1> -->
             <!-- <a href="../convention/pdf.php">Télécharger convention</a> -->
         <?php } else {
             echo "<h2>VOS RESULTATS S'AFFICHE ICI </h2>";
         }
         ?>
-        <!-- On tables -->
-        <table class="table table-hover">
-            <tr class="table-secondary" style="font-size: 16px; font-weight: 400;">
-                <td>PRENOM</td>
-                <td>NOM</td>
-                <td>SESSION</td>
-                <td>MOYENNE</td>
-                <td>RANG</td>
-                <td>STATUT</td>
-            </tr>
-            <?php
-            for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
-                if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') { ?>
-                    <tr class="table-success" style="font-size: 14px;">
-                        <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
-                    </tr>
+        <div class="table-responsive">
+            <table class="table table-hover ">
+                <tr class="table-secondary" style="font-size: 16px; font-weight: 400;">
+                    <td>N° Etudiant</td>
+                    <td>PRENOM</td>
+                    <td>NOM</td>
+                    <td>SESSION</td>
+                    <td>MOYENNE</td>
+                    <td>RANG</td>
+                    <td>STATUT</td>
+                </tr>
                 <?php
-                } else if ($tableau_data_etudiant[$i]['statut'] == 'forclus') { ?>
-                    <tr class="table-dark" style="font-size: 14px;">
-                        <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
-                    </tr>
-                <?php
-                } else if ($tableau_data_etudiant[$i]['statut'] == 'suppleant') { ?>
-                    <tr class="table-primary" style="font-size: 14px;">
-                        <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
-                    </tr>
-                <?php } else if ($tableau_data_etudiant[$i]['statut'] == 'non attributaire') { ?>
-                    <tr class="table-danger" style="font-size: 14px;">
-                        <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
-                        <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
-                    </tr>
-            <?php }
-            } ?>
-        </table>
+                if (isset($_GET['data'])) {
+                    if ($tableau_data_etudiant['statut'] == 'attributaire') { ?>
+                        <tr class="table-success" style="font-size: 14px;">
+                            <td><?= $tableau_data_etudiant['num_etu'] ?></td>
+                            <td><?= $tableau_data_etudiant['prenoms'] ?></td>
+                            <td><?= $tableau_data_etudiant['nom'] ?></td>
+                            <td><?= $tableau_data_etudiant['sessionId'] ?></td>
+                            <td><?= $tableau_data_etudiant['moyenne'] ?></td>
+                            <td><?= $tableau_data_etudiant['rang'] ?></td>
+                            <td><?= $tableau_data_etudiant['statut'] ?></td>
+                        </tr>
+                    <?php
+                    } else if ($tableau_data_etudiant['statut'] == 'forclus') { ?>
+                        <tr class="table-dark" style="font-size: 14px;">
+                            <td><?= $tableau_data_etudiant['num_etu'] ?></td>
+                            <td><?= $tableau_data_etudiant['prenoms'] ?></td>
+                            <td><?= $tableau_data_etudiant['nom'] ?></td>
+                            <td><?= $tableau_data_etudiant['sessionId'] ?></td>
+                            <td><?= $tableau_data_etudiant['moyenne'] ?></td>
+                            <td><?= $tableau_data_etudiant['rang'] ?></td>
+                            <td><?= $tableau_data_etudiant['statut'] ?></td>
+                        </tr>
+                    <?php
+                    } else if ($tableau_data_etudiant['statut'] == 'suppleant') { ?>
+                        <tr class="table-primary" style="font-size: 14px;">
+                            <td><?= $tableau_data_etudiant['num_etu'] ?></td>
+                            <td><?= $tableau_data_etudiant['prenoms'] ?></td>
+                            <td><?= $tableau_data_etudiant['nom'] ?></td>
+                            <td><?= $tableau_data_etudiant['sessionId'] ?></td>
+                            <td><?= $tableau_data_etudiant['moyenne'] ?></td>
+                            <td><?= $tableau_data_etudiant['rang'] ?></td>
+                            <td><?= $tableau_data_etudiant['statut'] ?></td>
+                        </tr>
+                    <?php } else if ($tableau_data_etudiant['statut'] == 'non attributaire') { ?>
+                        <tr class="table-danger" style="font-size: 14px;">
+                            <td><?= $tableau_data_etudiant['num_etu'] ?></td>
+                            <td><?= $tableau_data_etudiant['prenoms'] ?></td>
+                            <td><?= $tableau_data_etudiant['nom'] ?></td>
+                            <td><?= $tableau_data_etudiant['sessionId'] ?></td>
+                            <td><?= $tableau_data_etudiant['moyenne'] ?></td>
+                            <td><?= $tableau_data_etudiant['rang'] ?></td>
+                            <td><?= $tableau_data_etudiant['statut'] ?></td>
+                        </tr>
+                    <?php } else if ($tableau_data_etudiant['statut'] == 'non defini') { ?>
+                        <tr class="table-danger" style="font-size: 14px;">
+                            <td><?= $tableau_data_etudiant['num_etu'] ?></td>
+                            <td><?= $tableau_data_etudiant['prenoms'] ?></td>
+                            <td><?= $tableau_data_etudiant['nom'] ?></td>
+                            <td><?= $tableau_data_etudiant['sessionId'] ?></td>
+                            <td><?= $tableau_data_etudiant['moyenne'] ?></td>
+                            <td><?= $tableau_data_etudiant['rang'] ?></td>
+                            <td><?= $tableau_data_etudiant['statut'] ?></td>
+                        </tr>
+                        <?php }
+                } else {
+                    for ($i = 0; $i < count($tableau_data_etudiant); $i++) {
+                        if ($tableau_data_etudiant[$i]['statut'] == 'attributaire') { ?>
+                            <tr class="table-success" style="font-size: 14px;">
+                                <td><?= $tableau_data_etudiant[$i]['num_etu'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
+                            </tr>
+                        <?php
+                        } else if ($tableau_data_etudiant[$i]['statut'] == 'forclus') { ?>
+                            <tr class="table-dark" style="font-size: 14px;">
+                                <td><?= $tableau_data_etudiant[$i]['num_etu'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
+                            </tr>
+                        <?php
+                        } else if ($tableau_data_etudiant[$i]['statut'] == 'suppleant') { ?>
+                            <tr class="table-primary" style="font-size: 14px;">
+                                <td><?= $tableau_data_etudiant[$i]['num_etu'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
+                            </tr>
+                        <?php } else if ($tableau_data_etudiant[$i]['statut'] == 'non attributaire') { ?>
+                            <tr class="table-danger" style="font-size: 14px;">
+                                <td><?= $tableau_data_etudiant[$i]['num_etu'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
+                            </tr>
+                        <?php } else if ($tableau_data_etudiant[$i]['statut'] == 'non defini') { ?>
+                            <tr class="table-danger" style="font-size: 14px;">
+                                <td><?= $tableau_data_etudiant[$i]['num_etu'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['prenoms'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['nom'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['sessionId'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['moyenne'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['rang'] ?></td>
+                                <td><?= $tableau_data_etudiant[$i]['statut'] ?></td>
+                            </tr>
+                <?php }
+                    }
+                } ?>
+            </table>
+        </div>
     </div>
     <script src="../../assets/js/jquery-3.2.1.min.js"></script>
     <script src="../../assets/js/plugins.js"></script>

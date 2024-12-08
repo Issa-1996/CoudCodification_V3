@@ -4,19 +4,8 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-// if (empty($_SESSION['classe'])) {
-//     header('location: /COUD/codif/profils/personnels/niveau.php');
-//     exit();
-// }
-//connexion à la base de données
 include('../../traitement/fonction.php');
 connexionBD();
-// Sélectionnez les options à partir de la base de données avec une pagination
-include('../../traitement/requete.php');
-
-// Comptez le nombre total d'options dans la base de données details lits affecter (quotas)
-// $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
-$countIn = 0;
 if (isset($_GET['erreurValider'])) {
     $_SESSION['erreurValider'] = $_GET['erreurValider'];
 } else {
@@ -45,9 +34,7 @@ if (isset($_GET['erreurForclo'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COUD: CODIFICATION</title>
-    <!-- CSS================================================== -->
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <!-- script================================================== -->
     <script src="../../assets/js/modernizr.js"></script>
     <script src="../../assets/js/pace.min.js"></script>
     <link rel="stylesheet" href="../../assets/css/styles.css">
@@ -66,44 +53,40 @@ if (isset($_GET['erreurForclo'])) {
             </div>
         </div>
         <br><br> <br>
-
-        <!-- Interval date -->
-        <form  action="requestEtatPaiement.php"method="POST"  >
-            <div class=" col-md-9 d-flex justify-content-center; align-item:center " >
+        <form action="requestEtatPaiement.php" method="POST">
+            <div class=" col-md-9 d-flex justify-content-center; align-item:center ">
                 <div class=" " style="margin: auto; font-size: 16px; font-weight: 400;">
                     <label for="start">date debut: </label>
-                    
-                    <input type="date" id="date_debut"  name="date_debut" value=""/>
+
+                    <input type="date" id="date_debut" name="date_debut" value="" />
                 </div>
-                <div class="" style="margin: auto; font-size: 16px; font-weight: 400;"> 
+                <div class="" style="margin: auto; font-size: 16px; font-weight: 400;">
                     <label for="start">date fin:</label>
-                    <input type="date" id="date_fin" name="date_fin"  value="<?php echo isset($_POST['date_fin']) ? htmlspecialchars($_POST['date_fin']) : ''; ?>"  />
+                    <input type="date" id="date_fin" name="date_fin" value="<?php echo isset($_POST['date_fin']) ? htmlspecialchars($_POST['date_fin']) : ''; ?>" />
                 </div>
-                <div class="" style="margin: auto; font-size: 16px; font-weight: 400;"> 
-                    <button id="submitBtn" name="rechercher" type="submit" class="btn btn-success" style="font-size: 16px; font-weight: 400;" >Rechercher</button>
+                <div class="" style="margin: auto; font-size: 16px; font-weight: 400;">
+                    <button id="submitBtn" name="rechercher" type="submit" class="btn btn-success" style="font-size: 16px; font-weight: 400;">Rechercher</button>
                 </div>
-                <div class="" style="margin: auto; "> 
-                    <button id="submitBtn" name="imprimer" type="submit" class="btn btn-info" style="font-size: 16px; font-weight: 400;" >Imprimer</button>
+                <div class="" style="margin: auto; ">
+                    <button id="submitBtn" name="imprimer" type="submit" class="btn btn-info" style="font-size: 16px; font-weight: 400;">Imprimer</button>
                 </div>
             </div>
-        </form>  <br><br>
-        
-        <!-- table -->
-         <div class="row">
+        </form> <br><br>
+        <div class="row">
             <div class="col-md-12">
                 <div class="text-center ">
-                <?php 
-                    if(isset($_SESSION['debut']) && $_SESSION['fin']){
-                        $timeD= strtotime($_SESSION['debut']);
-                        $timeF= strtotime($_SESSION['fin']);
-                        $dateD = date('d-m-Y',$timeD);
-                        $dateF = date('d-m-Y',$timeF);
-                        echo "Date debut: ".$dateD." et Date fin: ".$dateF;
+                    <?php
+                    if (isset($_SESSION['debut']) && $_SESSION['fin']) {
+                        $timeD = strtotime($_SESSION['debut']);
+                        $timeF = strtotime($_SESSION['fin']);
+                        $dateD = date('d-m-Y', $timeD);
+                        $dateF = date('d-m-Y', $timeF);
+                        echo "Date debut: " . $dateD . " et Date fin: " . $dateF;
                     }
                     ?>
                 </div>
             </div>
-         </div>
+        </div>
         <div>
             <table class="table table-hover">
                 <tr class="table-secondary" style="font-size: 16px; font-weight: 400;">
@@ -114,7 +97,7 @@ if (isset($_GET['erreurForclo'])) {
                     <th>Date</th>
                 </tr>
                 <?php if (!empty($_GET['data'])) : ?>
-                    <?php foreach ($_GET['data'] as $row) :?>
+                    <?php foreach ($_GET['data'] as $row) : ?>
                         <tr style="font-size: 14px;">
                             <td class="text-center"><?php echo htmlspecialchars($row['num_etu']); ?></td>
                             <td class="text-center"><?php echo htmlspecialchars($row['nom']); ?></td>
@@ -131,16 +114,14 @@ if (isset($_GET['erreurForclo'])) {
                 <?php endif; ?>
             </table>
         </div>
-    </div>   
-    
-        <script src="../../assets/js/jquery-3.2.1.min.js"></script>
-        <script src="../../assets/js/plugins.js"></script>
-        <script src="../../assets/js/main.js"></script>
+    </div>
 
-        <!-- JavaScript de Bootstrap (assurez-vous d'ajuster le chemin si nécessaire) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/jquery-3.2.1.min.js"></script>
+    <script src="../../assets/js/plugins.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 <script src="../../assets/js/script.js"></script>
 </body>

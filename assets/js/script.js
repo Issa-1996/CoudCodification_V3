@@ -80,7 +80,8 @@ function populateData() {
   var classe = selectClasse.value;
   // selectData.innerHTML = "";
 
-  var newURL = "niveau.php?fac=" + fac + "&dep=" + dep + "&classe=" + classe;
+  var newURL =
+    "niveau.php?fac=" + fac + "&dep=" + dep + "&classe=" + classe + "&actu=0";
   window.history.pushState({ path: newURL }, "", newURL);
 
   // Sauvegarder la sélection dans un cookie
@@ -124,44 +125,44 @@ window.onload = function () {
 };
 
 //  filter dynamique
-document.getElementById('filter').addEventListener('change', function() {
-  document.getElementById('filterForm').submit();
+document.getElementById("filter").addEventListener("change", function () {
+  document.getElementById("filterForm").submit();
 });
 
 // fonction des formulaire du wallet paiement
 function checkInput() {
-  const input = document.getElementById('numEtudiant').value;
-  const submitBtn = document.getElementById('submitBtn');
-  
+  const input = document.getElementById("numEtudiant").value;
+  const submitBtn = document.getElementById("submitBtn");
+
   // Vérifier si l'entrée est composée exactement de neuf caractères alphanumériques en majuscule
   if (/^[A-Z0-9]{9}$/.test(input)) {
-      submitBtn.disabled = false;
+    submitBtn.disabled = false;
   } else {
-      submitBtn.disabled = true;
+    submitBtn.disabled = true;
   }
 }
 
 // Ajouter un écouteur d'événement pour valider l'entrée à chaque changement dans le champ de saisie
-document.getElementById('numEtudiant').addEventListener('input', checkInput);
+document.getElementById("numEtudiant").addEventListener("input", checkInput);
 
 function validateInput() {
-  const input = document.getElementById('numEtudiant').value;
-  const inputMessage = document.getElementById('inputMessage');
+  const input = document.getElementById("numEtudiant").value;
+  const inputMessage = document.getElementById("inputMessage");
   if (/^[A-Z0-9]{9}$/.test(input)) {
-      inputMessage.textContent = '';
+    inputMessage.textContent = "";
   } else {
-      inputMessage.textContent = 'Neuf chiffres est requis';
+    inputMessage.textContent = "Neuf chiffres est requis";
   }
 }
 // Ajouter un écouteur d'événement pour valider l'entrée à chaque changement
-document.getElementById('numEtudiant').addEventListener('input', validateInput);
+document.getElementById("numEtudiant").addEventListener("input", validateInput);
 function validateForm() {
-  const input = document.getElementById('numEtudiant').value;
+  const input = document.getElementById("numEtudiant").value;
   if (/^[A-Z0-9]{9}$/.test(input)) {
-      return true;
+    return true;
   } else {
-      alert('Le numéro étudiant doit contenir au moins 7 chiffres.');
-      return false;
+    alert("Le numéro étudiant doit contenir au moins 7 chiffres.");
+    return false;
   }
 }
 

@@ -4,14 +4,10 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-
 require_once __DIR__ . '/vendor/autoload.php';
 require('../../../traitement/fonction.php');
-
 $mpdf = new \Mpdf\Mpdf();
-
 $data[] = getPaiementWithDateInterval($_SESSION['debut'], $_SESSION['fin']);
-
 $html = '
 <!DOCTYPE html>
 <html lang="en">

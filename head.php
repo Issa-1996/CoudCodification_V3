@@ -6,26 +6,21 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
 require_once(__DIR__ . '/traitement/fonction.php');
 if ($_SESSION['profil'] == 'user') {
   $inforequeteAffectEtu = getStudentChoiseLit($_SESSION['id_etu']);
-
   $affecter = 0;
   while ($row = $inforequeteAffectEtu->fetch_assoc()) {
     $affecter++;
   }
-  $resultatReqLitEtu = getOneLitByStudent($_SESSION['id_etu']);
   $quotaStudentConnect = getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)'];
-  // $moyenneStudentConnect = studentConnect($_SESSION['num_etu'])['moyenne'];
-  // $rangStudentConnect = getStatutByOneStudent($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $moyenneStudentConnect, $_SESSION['num_etu'])['rang'];
-
-  // $statutStudentConnect = getStatutByOneStudent($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $moyenneStudentConnect, $_SESSION['num_etu'])['statut'];
   $statutStudentConnect = getOnestudentStatus($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $_SESSION['num_etu']);
-  // print_r($statutStudentConnect);
 
-
-  // $dataStudentConnect = studentConnect($_SESSION['username']);
-
-  // $teste = getStatutByOneStudent($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $moyenneStudentConnect, $_SESSION['num_etu']);
-  // print_r($teste);
+  if ($statutStudentConnect['statut'] != 'suppleant') {
+    $resultatReqLitEtu = getOneLitByStudent($_SESSION['num_etu']);
+  } else {
+    $monTitulaire = getOneTitulaireBySuppleant($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
+    $resultatReqLitEtu = getOneLitByStudent($monTitulaire['num_etu']);
+  }
 }
+// print_r($statutStudentConnect);
 ?>
 
 <head>
@@ -61,6 +56,14 @@ if ($_SESSION['profil'] == 'user') {
     </div>
     <nav class="header-nav-wrap">
       <ul class="header-nav">
+        <?php if (($_SESSION['profil'] == 'chef_pavillon')) { ?>
+          <li class="nav-item">
+            <a class="nav-link" href="loger.php" title="Clando">ACCUEIL</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="clando.php" title="Clando">CLANDO</a>
+          </li>
+        <?php } ?>
         <?php if (($_SESSION['profil'] == 'paiement')) { ?>
           <li class="nav-item">
             <a class="nav-link" href="paiement.php" title="Paiement de caution">Paiement</a>
@@ -73,9 +76,6 @@ if ($_SESSION['profil'] == 'user') {
           <li class="nav-item">
             <a class="nav-link" href="validation.php" title="Paiement de caution">Validation</a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="../personnels/niveau.php" title="Changer de niveau de formation ">Changer-Classe</a>
-          </li> -->
         <?php } ?>
         <?php if (($_SESSION['profil'] == 'quota') && isset($_SESSION['classe'])) { ?>
           <li class="nav-item active">
@@ -92,7 +92,11 @@ if ($_SESSION['profil'] == 'user') {
           <li class="nav-item active">
             <a class="nav-link" href="../etudiants/resultat.php" title="Revenir à la page d'accueil">Accueil</a>
           </li>
-          <?php
+          <?php if (getValidateLitByTitulaireOfSuppleant($_SESSION['num_etu'])) { ?>
+            <li class="nav-item active">
+              <a class="nav-link" href="../etudiants/situation.php" title="Voire ma situation de paiement">Ma Situation</a>
+            </li>
+          <?php }
           if (($affecter == 0) && ($statutStudentConnect['statut'] == 'attributaire')) {
             $_SESSION['lit_choisi'] = ''; ?>
             <li class="nav-item active">
@@ -119,10 +123,9 @@ if ($_SESSION['profil'] == 'user') {
 
     <a class="header-menu-toggle" href="#0"><span>Menu</span></a>
   </header>
-  <!-- end s-header -->
 </body>
 <section id="homedesigne" class="s-homedesigne">
-  <?php if (($_SESSION['profil'] == 'quota') || ($_SESSION['profil'] == 'paiement') || ($_SESSION['profil'] == 'validation') || ($_SESSION['profil'] == 'chef_pavillon') || ($_SESSION['profil'] == 'forclu')) { ?>
+  <?php if (($_SESSION['profil'] == 'quota') || ($_SESSION['profil'] == 'paiement') || ($_SESSION['profil'] == 'validation') || ($_SESSION['profil'] == 'chef_pavillon') || ($_SESSION['profil'] == 'forclu') || ($_SESSION['profil'] == 'delai')) { ?>
     <p class="lead">Espace Administration: Bienvenue! <br> <br> <span>
         (<?= $_SESSION['prenom'] . "  " . $_SESSION['nom'] ?>)
       </span></p>
@@ -134,11 +137,17 @@ if ($_SESSION['profil'] == 'user') {
       Statut : <?= $statutStudentConnect['statut']; ?><br><br>
       <?php
       if ($statutStudentConnect['statut'] == 'suppleant') {
-        // $monTitulaire = getStatutByOneStudentTitulaireOfSuppl($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
         $monTitulaire = getOneTitulaireBySuppleant($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
       ?>
         MON TITULAIRE : Prenom: <?= $monTitulaire['prenoms'] . '/ Nom : ' . $monTitulaire['nom'] . '/ Moyenne : ' . $monTitulaire['moyenne'] . '/ Rang : ' . $monTitulaire['rang']; ?><br><br>
-      <?php
+        <?php
+      } else if ($statutStudentConnect['statut'] == 'attributaire') {
+        $monSuppleant = getOneSuppleantByTitulaire($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
+        if (isset($monSuppleant)) {
+        ?>
+          MON SUPPLEANT : Prenom: <?= $monSuppleant['prenoms'] . '/ Nom : ' . $monSuppleant['nom'] . '/ Moyenne : ' . $monSuppleant['moyenne'] . '/ Rang : ' . $monSuppleant['rang']; ?><br><br>
+        <?php
+        }
       }
       if ($statutStudentConnect['statut'] == 'attributaire') { ?>
         ACTION : <?= getValidateLogerByStudent($_SESSION['num_etu']); ?>

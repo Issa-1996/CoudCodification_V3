@@ -4,18 +4,9 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-// if (empty($_SESSION['classe'])) {
-//     header('location: /COUD/codif/profils/personnels/niveau.php');
-//     exit();
-// }
-//connexion à la base de données
 include('../../traitement/fonction.php');
 connexionBD();
-// Sélectionnez les options à partir de la base de données avec une pagination
 include('../../traitement/requete.php');
-
-// Comptez le nombre total d'options dans la base de données details lits affecter (quotas)
-// $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
 $countIn = 0;
 if (isset($_GET['erreurValider'])) {
     $_SESSION['erreurValider'] = $_GET['erreurValider'];
@@ -40,9 +31,7 @@ if (isset($_GET['erreurNonTrouver'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COUD: CODIFICATION</title>
-    <!-- CSS================================================== -->
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <!-- script================================================== -->
     <script src="../../assets/js/modernizr.js"></script>
     <script src="../../assets/js/pace.min.js"></script>
     <link rel="stylesheet" href="../../assets/css/styles.css">
@@ -60,7 +49,6 @@ if (isset($_GET['erreurNonTrouver'])) {
                 <h2>Forclusion manuel</h2>
             </div>
         </div>
-        <!-- <span style="color: red;"> <?= $_SESSION['erreurValider']; ?> </span> -->
         <div class="row" style="justify-content: center;">
             <?php if ($_SESSION['erreurValider']) { ?>
                 <div class="col-md-3">
@@ -85,30 +73,16 @@ if (isset($_GET['erreurNonTrouver'])) {
                 <div class="row">
                     <div class="col-md-10">
                         <input id="numEtudiant" name="numEtudiant" type="text" class="form-control form-control-lg" placeholder="NUMERO CARTE ETUDIANT" oninput="checkInput()" onblur="validateInput()">
-                        <!-- <p id="affichage"></p> -->
                         <script>
-                            // Sélectionner l'élément input
                             var inputElement = document.getElementById('numEtudiant');
-
-                            // Ajouter un écouteur d'événement sur l'input pour détecter les changements
                             inputElement.addEventListener('input', function() {
-                                // Récupérer la valeur du champ input
                                 var texte = inputElement.value;
-
-                                // Convertir le texte en majuscule
                                 var texteMajuscule = texte.toUpperCase();
-
-                                // Mettre à jour la valeur du champ input
                                 inputElement.value = texteMajuscule;
-
-                                // Récupérer l'élément où afficher le texte
                                 var affichageElement = document.getElementById('affichage');
-
-                                // Mettre à jour le texte de l'élément
                                 affichageElement.textContent = texteMajuscule;
                             });
                         </script>
-                        <!-- <span id="inputMessage" style="color: green; font-size: 12px;"></span> -->
                     </div>
                     <div class="col-md-2">
                         <button id="submitBtn" type="submit" class="btn btn-primary btn-lg" disabled>Rechercher</button>
@@ -130,58 +104,55 @@ if (isset($_GET['erreurNonTrouver'])) {
                                     <input class="form-control" name="id_etu" value="<?= $data['id_etu'] ?>" style="visibility: hidden;">
                                 </div>
                                 <div class="col-md-4 ">
-                                    <input  type="text" class="form-control "  placeholder="<?= $data['nom'] ?>" disabled>
+                                    <input type="text" class="form-control " placeholder="<?= $data['nom'] ?>" disabled>
                                 </div>
                             </div>
                             <div class="row" style="display: flex;justify-content: center;">
 
                                 <div class="col-md-4">
-                                    <input  type="text" class="form-control "  placeholder="<?= $data['etablissement'] ?> " disabled>
+                                    <input type="text" class="form-control " placeholder="<?= $data['etablissement'] ?> " disabled>
                                 </div>
                                 <div class="col-md-4">
-                                    <input  type="text" class="form-control " placeholder="<?= $data['niveauFormation'] ?>" disabled>
+                                    <input type="text" class="form-control " placeholder="<?= $data['niveauFormation'] ?>" disabled>
                                 </div>
                             </div><br>
                             <div class="row" style="display: flex;justify-content: center;color:black;">
                                 <div class="col-md-4 mb-3">
-                                    <input  type="text" class="form-control" placeholder="id : <?= $data['numIdentite'] ?>" disabled>
+                                    <input type="text" class="form-control" placeholder="id : <?= $data['numIdentite'] ?>" disabled>
                                 </div>
                                 <div class="col-md-4">
-                                    <input  type="text" class="form-control" placeholder="<?= $data['dateNaissance'] ?>" disabled>
+                                    <input type="text" class="form-control" placeholder="<?= $data['dateNaissance'] ?>" disabled>
                                 </div>
                             </div><br>
                             <div class="row" style="display: flex;justify-content: center;color:black;">
                                 <div class="col-md-4 mb-3">
-                                    <input  type="text" class="form-control" placeholder="<?= $data['typeEtudiant']  ?>" disabled>
+                                    <input type="text" class="form-control" placeholder="<?= $data['typeEtudiant']  ?>" disabled>
                                 </div>
                                 <div class="col-md-4">
-                                    <input  type="text" class="form-control" placeholder=" moyenne : <?= $data['moyenne'] ?>" disabled>
+                                    <input type="text" class="form-control" placeholder=" moyenne : <?= $data['moyenne'] ?>" disabled>
                                 </div>
                             </div>
-                            <?php 
-                                if(isset($_GET['statut'])){
+                            <?php
+                            if (isset($_GET['statut'])) {
                             ?>
-                            <div class="col-md-8"  style="margin: auto" >
-                                <textarea class="form-control" name="motif" disabled style="height: 100px;" placeholder="Le Motif : <?= $data['motif_manuel'] ?>"></textarea>
-                            </div> <?php }
-                                 else {?>
-                            <div class="col-md-8" style="margin: auto" >
-                                <textarea class="form-control" name="motif" placeholder="Ecririvez ici les motifs du forclo..." style="height: 100px;"></textarea>
-                            </div>
+                                <div class="col-md-8" style="margin: auto">
+                                    <textarea class="form-control" name="motif" disabled style="height: 100px;" placeholder="Le Motif : <?= $data['motif_manuel'] ?>"></textarea>
+                                </div> <?php } else { ?>
+                                <div class="col-md-8" style="margin: auto">
+                                    <textarea class="form-control" name="motif" placeholder="Ecririvez ici les motifs du forclo..." style="height: 100px;"></textarea>
+                                </div>
                             <?php } ?>
-                            <?php 
-                                if(!isset($_GET['statut'])){
-                            ?> 
-                            <div  class="d-grid gap-2 col-2 mx-auto " style="margin-top: 30px;" >
-                                <button class="btn btn-success btn-lg fs-3" type="button" data-toggle="modal" data-target="#confirmationModal">Folclore</button>
-                            </div>
-                                <?php } else { ?>
-                                    <div  class="d-grid gap-2 col-2 mx-auto " style="margin-top: 30px;" >
-                                        <a href="forclore.php" class="btn btn-dark btn-lg fs-3" >Retour</a>
-                                    </div>
+                            <?php
+                            if (!isset($_GET['statut'])) {
+                            ?>
+                                <div class="d-grid gap-2 col-2 mx-auto " style="margin-top: 30px;">
+                                    <button class="btn btn-success btn-lg fs-3" type="button" data-toggle="modal" data-target="#confirmationModal">Folclore</button>
+                                </div>
+                            <?php } else { ?>
+                                <div class="d-grid gap-2 col-2 mx-auto " style="margin-top: 30px;">
+                                    <a href="forclore.php" class="btn btn-dark btn-lg fs-3">Retour</a>
+                                </div>
                             <?php } ?>
-                           
-                            <!-- Modal -->
                             <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -195,7 +166,6 @@ if (isset($_GET['erreurNonTrouver'])) {
                                             Êtes-vous sûr de vouloir effectuer cette action ?
                                         </div>
                                         <div class="modal-footer">
-                                            <!-- Boutons pour confirmer ou annuler -->
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                                             <button type="submit" class="btn btn-primary">Confirmer</button>
                                         </div>
@@ -210,8 +180,6 @@ if (isset($_GET['erreurNonTrouver'])) {
         <script src="../../assets/js/jquery-3.2.1.min.js"></script>
         <script src="../../assets/js/plugins.js"></script>
         <script src="../../assets/js/main.js"></script>
-
-        <!-- JavaScript de Bootstrap (assurez-vous d'ajuster le chemin si nécessaire) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

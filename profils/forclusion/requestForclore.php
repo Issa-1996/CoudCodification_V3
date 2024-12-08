@@ -1,11 +1,9 @@
 <?php
-// Verifier la session si elle est actif, sinon on redirige vers la racine
 session_start();
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
     exit();
 }
-// Verifier si la session stock toujours la valeur du niveau de la classe, sinon on l'initialise
 if (isset($_SESSION['classe'])) {
     $classe = $_SESSION['classe'];
 } else {
@@ -15,7 +13,6 @@ include('../../traitement/fonction.php');
 
 if (isset($_POST['numEtudiant'])) {
     $num_etu = $_POST['numEtudiant'];
-    //Get data for student by id
     $etudiantVerifie = studentConnect($num_etu);
     $data = isEtudiantForclus($etudiantVerifie['id_etu']);
     if ($data == null) {

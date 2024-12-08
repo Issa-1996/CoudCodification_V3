@@ -196,3 +196,96 @@ input[placeholder] {
 textarea[placeholder] {
   font-size: 18px;
 }
+
+input:disabled {
+  background-color: rgba(50, 115, 220, 0.1) !important; /* Forcer le changement */
+  color: black !important; /* Optionnel */
+}
+
+/** RESPONSIVE MOBILE*/
+@media (max-width: 768px) {
+  .table td, .table th {
+      font-size: 12px; /* Ajustez la taille de la police pour mobile */
+  }
+  .alert {
+      font-size: 14px; /* Ajustez la taille de la police pour les alertes */
+  }
+}
+@media (max-width: 768px) {
+    .optionEtu {
+        font-size: 14px; /* Ajuster la taille de la police */
+    }
+    .archive {
+        font-size: 14px;
+    }
+    .optionEtu {
+      max-width: 30%;
+      width: 20%;
+      display: inline-block;
+      display: inline-block;
+      padding: 0.375rem 0.75rem;
+      margin: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      vertical-align: middle;
+      cursor: pointer;
+      border: 1px solid #3777b0;
+      color: #3777b0;
+      background-color: transparent;
+      border-radius: 0.25rem;
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .archive {
+      max-width: 30%;
+      width: 20%;
+      display: inline-block;
+      cursor: not-allowed;
+      display: inline-block;
+      display: inline-block;
+      padding: 0.375rem 0.75rem;
+      margin: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      vertical-align: middle;
+      border: 1px solid #3777b0;
+      color: white;
+      background-color: red;
+      border-radius: 0.25rem;
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .optionEtu {
+      max-width: 30%;
+      width: 20%;
+      display: inline-block;
+      display: inline-block;
+      padding: 0.375rem 0.75rem;
+      margin: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      vertical-align: middle;
+      cursor: pointer;
+      border: 1px solid #3777b0;
+      color: #3777b0;
+      background-color: transparent;
+      border-radius: 0.25rem;
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .options{
+      margin-left: -5%;
+    }
+}

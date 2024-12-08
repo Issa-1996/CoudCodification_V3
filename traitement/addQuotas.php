@@ -1,5 +1,4 @@
 <?php
-// Démarre une nouvelle session ou reprend une session existante
 session_start();
 if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
     header('Location: /COUD/codif/');
@@ -18,11 +17,10 @@ if (isset($_GET) && count($_GET) > 0) {
         }
     }
     if ($countError == 0) {
-        header('Location: ../profils/personnels/listeLits.php?successLitAffecter=Lits affecter à la '.$_SESSION['classe']. ' avec success!!!');
+        header('Location: ../profils/personnels/listeLits.php?successLitAffecter=Lits affecter à la ' . $_SESSION['classe'] . ' avec success!!!');
         exit();
     }
 } else {
     header('Location: ../profils/personnels/listeLits.php?erreurLitAffecter=VEUILLER CHOISIR UN LIT !!!');
     exit();
 }
-// require_once('close.php');
