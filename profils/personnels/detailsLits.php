@@ -20,7 +20,11 @@ if (isset($_POST['filter']) && $_POST['filter']) {
 if (isset($_SESSION['filter'])) {
     // $_SESSION['filter'] = isset($_POST['filter']) ? $_POST['filter'] : '';
     $resultatRequeteLitClasse = setFiltre($_SESSION['filter'], $_SESSION['sexe']);
+<<<<<<< HEAD
     $total_pagess = getPaginationFiltreClasse($_SESSION['classe'], $_SESSION['filter'], $_SESSION['sexe']);
+=======
+    $total_pagess = getPaginationFiltreClasse($_SESSION['filter'], $_SESSION['sexe']);
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
 } else {
     $total_pagess = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
 }

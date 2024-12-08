@@ -20,7 +20,11 @@ if (isset($_POST['filter']) && $_POST['filter']) {
 if (isset($_SESSION['filter'])) {
     // $_SESSION['filter'] = isset($_POST['filter']) ? $_POST['filter'] : '';
     $resultRequeteLitClasseEtudiant = setFiltre($_SESSION['filter'], $_SESSION['sexe']);
+<<<<<<< HEAD
     $total_pagesEtudiant = getPaginationFiltreClasse($_SESSION['classe'], $_SESSION['filter'], $_SESSION['sexe']);
+=======
+    $total_pagesEtudiant = getPaginationFiltreClasse($_SESSION['filter'], $_SESSION['sexe']);
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
 } else {
     $total_pagesEtudiant = getLitByQuotas($_SESSION['classe'], $_SESSION['sexe']);
 }
@@ -100,7 +104,11 @@ $resultatRequetePavillonClasse = getPavillonOneByNiveau($_SESSION['classe'], $_S
                                 <?php
                                 }
                             }
+<<<<<<< HEAD
                             if ($counter % 8 != 0) { ?>
+=======
+                            if ($counter % 10 != 0) { ?>
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                         </div>
 
                     <?php

@@ -107,7 +107,10 @@ if (isset($_GET['erreurForclo'])) {
                     <?php
                     if (isset($_GET['data'])) {
                         $data = $_GET['data'];
+<<<<<<< HEAD
                         // print_r($data);
+=======
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                         if ((isset($_GET['statut']) && $_GET['statut'] == 'suppleant') || (isset($_GET['statut']) && $_GET['statut'] == 'forclu')) {
                     ?>
                             <form action="requestLoger.php" method="POST">
@@ -123,11 +126,14 @@ if (isset($_GET['erreurForclo'])) {
                                         <?php if (isset($_GET['statut']) && $_GET['statut'] != 'forclu') { ?>
                                             <input class="form-control" name="statut" value="<?= $data['statut'] ?>" style="visibility: hidden;">
                                         <?php } ?>
+<<<<<<< HEAD
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black; margin-top:-3%; margin-bottom:1%;">
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" placeholder="STATUT : <?= $data['statut'] ?>" disabled style="text-align: center;">
+=======
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                                     </div>
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
@@ -151,14 +157,26 @@ if (isset($_GET['erreurForclo'])) {
                                         <div class="col-md-4">
                                             <input class="form-control" placeholder="Campus : <?= $data['campus'] ?>" disabled>
                                         </div>
+<<<<<<< HEAD
                                         <div class="col-md-4 mb-3">
                                             <input class="form-control" placeholder="Pavillon : <?= $data['pavillon'] ?>" disabled>
                                         </div>
+=======
+                                </div>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-4 mb-3">
+                                        <input class="form-control" placeholder="Pavillon : <?= $data['pavillon'] ?>" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input class="form-control" placeholder="Lit : <?= $data['lit'] ?>" disabled>
+                                    </div>
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                                 </div>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
                                     <div class="col-md-4 mb-3">
                                         <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']);  ?>" disabled>
                                     </div>
+<<<<<<< HEAD
                                     <div class="col-md-4">
                                         <input class="form-control" placeholder="Lit : <?= $data['lit'] ?>" disabled>
                                     </div>
@@ -168,6 +186,9 @@ if (isset($_GET['erreurForclo'])) {
                                         <input class="form-control" placeholder="Validé le : <?= dateFromat($data['dateTime_val']);  ?>" disabled>
                                     </div> -->
                                     <?php if (isset($data['id_log'])) { ?>
+=======
+                                    <?php if ($data['etat_id_val'] == 'Migré') { ?>
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                                         <div class="col-md-4 mb-3">
                                             <input class="form-control" placeholder="Loger le : <?= dateFromat($data['dateTime_loger']);  ?>" disabled>
                                         </div>
@@ -175,13 +196,26 @@ if (isset($_GET['erreurForclo'])) {
                                 </div>
                             <?php } ?>
                             <?php
+<<<<<<< HEAD
                             if ((isset($data['id_log'])) || (isset($_GET['statut']) && $_GET['statut'] == 'forclu')) {
+=======
+                            if ((isset($data['etat_id_val']) && $data['etat_id_val'] == 'Migré') || (isset($_GET['statut']) && $_GET['statut'] == 'forclu')) {
                             ?>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
                                     <div class="col-md-4 mb-3">
                                         <a class="btn btn-secondary" href="/COUD/codif/profils/loger/loger.php" type="button">RETOUR</a>
                                     </div>
                                 </div>
+                            <?php
+                            } else {
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
+                            ?>
+                                <div class="row" style="display: flex;justify-content: center;color:black;">
+                                    <div class="col-md-4 mb-3">
+                                        <a class="btn btn-secondary" href="/COUD/codif/profils/loger/loger.php" type="button">RETOUR</a>
+                                    </div>
+                                </div>
+<<<<<<< HEAD
                             <?php
                             } else {
                             ?>
@@ -225,6 +259,9 @@ if (isset($_GET['erreurForclo'])) {
                                     </div>
                             <?php }
                             } ?>
+=======
+                            <?php } ?>
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                             <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" -labelledby="confirmationModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">

@@ -10,6 +10,7 @@ if ($_SESSION['profil'] == 'user') {
   while ($row = $inforequeteAffectEtu->fetch_assoc()) {
     $affecter++;
   }
+<<<<<<< HEAD
   $quotaStudentConnect = getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)'];
   $statutStudentConnect = getOnestudentStatus($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $_SESSION['num_etu']);
 
@@ -19,6 +20,11 @@ if ($_SESSION['profil'] == 'user') {
     $monTitulaire = getOneTitulaireBySuppleant($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $statutStudentConnect['rang']);
     $resultatReqLitEtu = getOneLitByStudent($monTitulaire['num_etu']);
   }
+=======
+  $resultatReqLitEtu = getOneLitByStudent($_SESSION['num_etu']);
+  $quotaStudentConnect = getQuotaClasse($_SESSION['classe'], $_SESSION['sexe'])['COUNT(*)'];
+  $statutStudentConnect = getOnestudentStatus($quotaStudentConnect, $_SESSION['classe'], $_SESSION['sexe'], $_SESSION['num_etu']);
+>>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
 }
 // print_r($statutStudentConnect);
 ?>
