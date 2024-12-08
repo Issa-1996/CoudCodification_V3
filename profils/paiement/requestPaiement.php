@@ -7,10 +7,7 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
 include('../../traitement/fonction.php');
 if (isset($_POST['numEtudiant'])) {
     $num_etu = $_POST['numEtudiant'];
-<<<<<<< HEAD
     $_SESSION['num_etu'] = $_POST['numEtudiant'];
-=======
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     if (getIsForclu($num_etu)) {
         $queryString = http_build_query(['data' => getIsForclu($num_etu)]);
         header('Location: paiement.php?erreurForclo=ETUDIANT FORCLU !!!&statut=forclu&' . $queryString);
@@ -63,7 +60,6 @@ if (isset($_POST['valide'])) {
         $id_val = $_POST['valide'];
         $user = $_SESSION['username'];
         $montant = $_POST['montant'];
-<<<<<<< HEAD
         $montant_recu = $_POST['montant_recu'];
         $restant = ($montant - $montant_recu);
         $libelle = [];
@@ -100,25 +96,6 @@ if (isset($_POST['valide'])) {
                 header('Location: paiement.php?successValider=PAIEMENT AVEC SUCCESS !!!');
                 // header('Location: /COUD/codif/profils/paiement/recu/recu.php');
             }
-=======
-        $libelle = $_POST['libelle'];
-        foreach ($_POST as $mois_caution => $value) {
-            if ($value === "on") {
-                try {
-                    $libelle[$i] = $mois_caution;
-                    $i++;
-                } catch (Exception $e) {
-                    header('Location: paiement.php?erreurValider=Veuiller indiqué les mois ou la cautionr !!!');
-                    exit();
-                }
-            }
-        }
-        $chaine = json_encode($libelle);
-        $requete = setPaiement($id_aff, $user, $montant, $chaine);
-        print_r($requete);
-        if ($requete == 1) {
-            header('Location: paiement.php?successValider=Paiement valider avec success !!!');
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
         }
     } catch (mysqli_sql_exception $e) {
         header('Location: paiement.php?erreurValider=ETUDIANT DEJA PAYER !!!');

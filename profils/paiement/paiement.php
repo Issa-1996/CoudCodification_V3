@@ -185,14 +185,8 @@ if (isset($_GET['data'])) {
             <div class="col-md-12">
                 <ul class="options">
                     <?php
-<<<<<<< HEAD
                     if (isset($data)) {
                         $tableau_data_etudiant = getAllSituation($data['num_etu']);
-=======
-                    if (isset($_GET['data'])) {
-                        $data = $_GET['data'];
-                        print_r($data['libelle']);
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                     ?>
                         <form action="requestPaiement.php" method="POST">
                             <div class="col-md-8" style="margin-left:17%">
@@ -297,7 +291,6 @@ if (isset($_GET['data'])) {
                                 } else {
                                 ?>
                                     <div class="row" style="display: flex;justify-content: center;color:black;">
-<<<<<<< HEAD
                                         <div class="col-md-4">
                                             <input type="number" class="form-control" name="montant" disabled placeholder="Montant à payer : <?= $_a_payer; ?> fr cfa">
                                             <input type="number" class="form-control" name="montant" value="<?= $_a_payer; ?>" style="visibility: hidden;">
@@ -309,42 +302,6 @@ if (isset($_GET['data'])) {
                                     <div class="row" style="display: flex;justify-content: center;color:black;">
                                         <div class="col-md-4">
                                             <input type="number" name="montant_recu" class="form-control" placeholder="Montant recu">
-=======
-                                        <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" name="montant" disabled value="<?= getMontantPaye($data['num_etu']); ?>" placeholder="Montant à payer : <?= getMontantPaye($data['num_etu']); ?> fr cfa">
-                                            <input type="number" class="form-control" name="montant" value="<?= getMontantPaye($data['num_etu']); ?>" style="visibility: hidden;">
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <!-- <div class="form-check"> -->
-                                            <input type="checkbox" name="caution" id="caution" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="caution">CAUTION</label>
-
-                                            <input type="checkbox" name="janvier" id="janvier" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="janvier">JANVIER</label>
-                                            <input type="checkbox" name="fevrier" id="fevrier" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="fevrier">FEVRIER</label>
-
-                                            <input type="checkbox" name="mars" id="mars" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="mars">MARS</label><br>
-                                            <input type="checkbox" name="avril" id="avril" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="avril">AVRIL</label>
-
-                                            <input type="checkbox" name="mai" id="mai" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="mai">MAI</label>
-                                            <input type="checkbox" name="juin" id="juin" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="juin">JUIN</label>
-
-                                            <input type="checkbox" name="juillet" id="juillet" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="juillet">JUILLET</label>
-                                            <input type="checkbox" name="aout" id="aout" class="form-check-input" placeholder="First name">
-                                            <label class="form-check-label" for="aout">AOUT</label>
-                                            <!-- </div> -->
-                                        </div>
-                                    </div>
-                                    <!-- <div class="row" style="display: flex;justify-content: center;color:black;">
-                                        <div class="col-md-4 mb-3">
-                                            <input type="number" class="form-control" name="montant" placeholder="Le montant recu">
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                                         </div>
                                         <div class="col-md-4">
                                             <select id="libelle" name="libelle[]" multiple class="selectpicker form-control" data-live-search="true" placeholder="RENSIGGNER LE MOIS OU LA CAUTION" required>
@@ -363,7 +320,7 @@ if (isset($_GET['data'])) {
                                                 <option value="DECEMBRE">DECEMBRE</option>
                                             </select>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirmationModal">VALIDER</button>
                                 <?php }
                             } else { ?>

@@ -213,11 +213,7 @@ if (isset($_GET['erreurForclo'])) {
                                 </div><br>
                                 <div class="row" style="display: flex;justify-content: center;color:black;">
                                     <div class="col-md-4     mb-3">
-<<<<<<< HEAD
                                         <input class="form-control" placeholder="N° CARTE : <?= $data['num_etu'] ?>" disabled>
-=======
-                                        <input class="form-control" placeholder="CNI : <?= $data['numIdentite'] ?>" disabled>
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                                     </div>
                                     <div class="col-md-4    ">
                                         <input class="form-control" placeholder="Campus : <?= $data['campus'] ?>" disabled>

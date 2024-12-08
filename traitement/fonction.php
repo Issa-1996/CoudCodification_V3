@@ -50,7 +50,6 @@ function getAllNiveauFormation()
 }
 
 /********************************************************************************** 
-<<<<<<< HEAD
 Fonction d'affichage de la liste des Niveau de formation, elle est appeler dans connecte.php dans la table quota
  ********************************************************************************* */
 function getAllNiveauFormationByQuota()
@@ -62,8 +61,6 @@ function getAllNiveauFormationByQuota()
 }
 
 /********************************************************************************** 
-=======
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
 Fonction d'affichage de la liste des departement, elle est appeler dans requette.php et affiché dans la page niveau.php
  ********************************************************************************* */
 function getAllDepartement($dataFaculte)
@@ -233,11 +230,7 @@ Comptez le nombre total d'options dans la base de données: pagination liste lit
 function getLitByStudent($classe, $sexe)
 {
     global $connexion, $limit, $count_datas;
-<<<<<<< HEAD
     $count_queryEtudiant = "SELECT DISTINCT COUNT(*) as total FROM codif_quota JOIN codif_lit ON codif_quota.id_lit_q = codif_lit.id_lit WHERE `NiveauFormation`='$classe' AND codif_lit.sexe = '$sexe'";
-=======
-    $count_queryEtudiant = "SELECT COUNT(*) as total FROM codif_quota JOIN codif_lit ON codif_quota.id_lit_q = codif_lit.id_lit WHERE `NiveauFormation`='$classe' AND codif_lit.sexe = '$sexe'";
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     $count_resultEtudiant = mysqli_query($connexion, $count_queryEtudiant);
     if ($count_resultEtudiant) {
         $count_datas = mysqli_fetch_assoc($count_resultEtudiant);
@@ -515,11 +508,7 @@ Fonction de filtre de la liste des lits
 function setFiltre($filter, $sexe)
 {
     global $connexion, $limit, $offset;
-<<<<<<< HEAD
     $sqlFilter = "SELECT DISTINCT codif_lit.*, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe' LIMIT $limit OFFSET $offset";
-=======
-    $sqlFilter = "SELECT codif_lit.*, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE pavillon='$filter' AND codif_lit.sexe = '$sexe' LIMIT $limit OFFSET $offset";
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     if ($filter) {
         $resultatRequeteTotalLit = mysqli_query($connexion, $sqlFilter);
         return $resultatRequeteTotalLit;
@@ -551,11 +540,7 @@ function getPaginationFiltreClasse($classe, $filter, $sexe)
 {
     global $connexion, $limit, $offset, $count_datas;
     // $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE NiveauFormation='Licence 1 en Energies Renouvelables' AND codif_lit.pavillon='$filter' AND codif_lit.sexe = '$sexe'";
-<<<<<<< HEAD
     $count_queryTotalLit = "SELECT DISTINCT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE NiveauFormation='$classe' AND codif_lit.pavillon='$filter' AND codif_lit.sexe = '$sexe';";
-=======
-    $count_queryTotalLit = "SELECT COUNT(*) as total, CASE WHEN codif_quota.id_lit_q IS NOT NULL AND codif_affectation.id_lit IS NOT NULL THEN 'Migré dans les deux' WHEN codif_quota.id_lit_q IS NOT NULL THEN 'Migré vers codif_quota uniquement' WHEN codif_affectation.id_lit IS NOT NULL THEN 'Migré vers codif_affectation uniquement' ELSE 'Non migré' END AS statut_migration FROM codif_lit LEFT JOIN codif_quota ON codif_lit.id_lit = codif_quota.id_lit_q LEFT JOIN codif_affectation ON codif_lit.id_lit = codif_affectation.id_lit WHERE NiveauFormation='Licence 1 en Energies Renouvelables' AND codif_lit.pavillon='$filter' AND codif_lit.sexe = '$sexe';";
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     $count_resultat_total = mysqli_query($connexion, $count_queryTotalLit);
     if ($count_resultat_total) {
         $count_datas = mysqli_fetch_assoc($count_resultat_total);
@@ -591,7 +576,7 @@ function personnelConnect($username)
 
 /********************************************************************************** 
 Fonction pour récupérer les informations de l'étudiant pour le paiement de la caution
-********************************************************************************* */
+ ********************************************************************************* */
 function infoStudentPaie($numEtudiant)
 {
     global $connexion;
@@ -920,21 +905,7 @@ function getStatutStudentByQuota($quota, $classe, $sexe)
     ce.moyenne, 
     ce.niveauFormation,
     ce.etablissement,
-<<<<<<< HEAD
     ranks.rang, 
-=======
-    ce.departement,
-    ce.dateNaissance,
-    ce.lieuNaissance,
-    ce.sexe,
-    ce.nationalite,
-    ce.numIdentite,
-    ce.typeEtudiant,
-    ce.niveau,
-    ce.email_perso,
-    ce.email_ucad,
-    COALESCE(ranks.rang, 'N/A') AS rang, 
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     CASE 
         WHEN cf.id_etu IS NOT NULL THEN 'forclus' 
         WHEN ranks.rang <= $quota THEN 'attributaire' 
@@ -988,7 +959,6 @@ function getAllDelai($nature, $faculte)
 }
 
 /********************************************************************************** 
-<<<<<<< HEAD
 fonction d'affichage de toute les delais
  ********************************************************************************* */
 function getDelai()
@@ -1018,14 +988,6 @@ function addDelai($nature, $faculte, $date, $user)
     global $connexion;
     $date_sys = date("Y-m-d");
     $requete =  "INSERT INTO codif_delai (`nature`, `faculte`, `data_limite`, `dateTime_sys`, `username_user`) VALUES ('$nature', '$faculte', '$date', '$date_sys', '$user')";
-=======
-fonction d'ajout dans la table delai
- ********************************************************************************* */
-function addDelai($nature, $faculte, $date)
-{
-    global $connexion;
-    $requete =  "INSERT INTO codif_delai (`nature`, `faculte`,`data_limite`) VALUES ('$nature', '$faculte', '$date')";
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     $add = $connexion->prepare($requete);
     $add->execute();
 }
@@ -1176,7 +1138,6 @@ Fonction permet l'enregistrement forclusions manuel
  ********************************************************************************* */
 function addForcloreManuel($id_etu, $motif, $username_user)
 {
-<<<<<<< HEAD
     $info_studentsForclu = info2($id_etu);
     $info_studentsForclu_num_etu = $info_studentsForclu[2];
     $info_studentsForclu_sexe = $info_studentsForclu[13];
@@ -1216,15 +1177,6 @@ function addForcloreManuel($id_etu, $motif, $username_user)
             }
         }
     }
-=======
-    addArchive($id_etu, $username_user);
-    global $connexion;
-    deleteValidation($id_etu);
-    deleteAffectation($id_etu);
-    $requeteInsertForclusion = "INSERT INTO codif_forclusion (id_etu, dateTime_for, type, motif_manuel, username_user) VALUES ('$id_etu', NOW(), 'manuel', '$motif', '$username_user' )";
-    $requete = $connexion->prepare($requeteInsertForclusion);
-    return $requete->execute();
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
 }
 
 /********************************************************************************** 
@@ -1279,7 +1231,6 @@ function getOneTitulaireBySuppleant($quota, $classe, $sexe, $rang)
     }
 }
 
-<<<<<<< HEAD
 /********************************************************************************** 
 Fonction pour recuperer les données du suppleant selon le rang du titulaire
  ***********************************************************************************/
@@ -1303,35 +1254,19 @@ function addArchive($id_etu, $username_user = null, $id_etu_heritier = null, $na
         // Verification du lit choisi par l'etudiant s'il existe
         $affectation = getLitStudentForclu($id_etu);
         if ($affectation) {
-=======
-/* * ******************************************************************************** 
-Fonction stocké toutes les informations de l'etudiant forclu automatique
-********************************************************************************* */
-function addArchive($id_etu, $username_user = null)
-{
-    global $connexion;
-
-    try {
-        // Récupérer les informations
-        if ($affectation = getLitStudentForclu($id_etu)) {
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
             $id_lit = $affectation['id_lit'];
             $date_choix = $affectation['dateTime_aff'];
         } else {
             $id_lit = null;
             $date_choix = null;
         }
-<<<<<<< HEAD
 
         // Verification de la validation du lit choisi par l'etudiant s'il existe
-=======
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
         if ($validation = getDateValStudentForclu($id_etu)) {
             $date_val = $validation['dateTime_val'];
         } else {
             $date_val = null;
         }
-<<<<<<< HEAD
 
         // Verification du paiement du lit choisi par l'etudiant s'il existe
         $paiement = getValidatePaiementLitBySuppleant2($id_etu);
@@ -1384,12 +1319,6 @@ function addArchive($id_etu, $username_user = null)
             deletePaiement($id_etu);
             deleteValidation($id_etu);
         }
-=======
-        // Préparer et exécuter la requête d'insertion
-        $req_add_archive = "INSERT INTO codif_archive (`id_etu`, `id_lit`, `date_choix`, `date_val`, `dateTime_sys`, `username_user`) VALUES (?, ?, ?, ?, NOW(), ?)";
-        $insert_archive = $connexion->prepare($req_add_archive);
-        $insert_archive->bind_param("iisss", $id_etu, $id_lit, $date_choix, $date_val, $username_user);
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
         return $insert_archive->execute();
     } catch (mysqli_sql_exception $e) {
         echo "Erreur SQL : " . $e->getMessage();
@@ -1478,18 +1407,10 @@ Fonction pour calculer le caution et le nombre de mois a payer
 ********************************************************************************* */
 function getMontantPaye($numEtudiant)
 {
-<<<<<<< HEAD
     $faculte =  info($numEtudiant)[7];
     $dateDepart = getAllDelai('depart', $faculte)['data_limite'];
     $date_fermeture = getAllDelai('fermeture', $faculte)['data_limite'];
     $nbr_mois = calcul_nbreMois($dateDepart, $date_fermeture);
-=======
-    $dateDepart = getAllDelai("depart", info($numEtudiant)[5]);
-    $date_debut = DateTime::createFromFormat('Y-m-d', dateFromat($dateDepart['data_limite']));
-    $date_sys = DateTime::createFromFormat('Y-m-d', dateFromat(date("Y-n-j")));
-    $nbr_mois = $date_debut->diff($date_sys);
-    $nbr_mois = $nbr_mois->format('%m');
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     if (!getValidatePaiementLitBySuppleant($numEtudiant)) {
         if (isIndivLitStudent($numEtudiant) == 'non') {
             $montant = 5000 + getFacturation('non')['montant'] * $nbr_mois;
@@ -1575,13 +1496,9 @@ function info($login)
     $ee = mysqli_query($connexion, $rr);
     $ss = mysqli_fetch_array($ee);
 
-<<<<<<< HEAD
     $id_etu = $ss['id_etu'];
     $numIdentite = $ss['numIdentite'];
     $num_etu = $ss['num_etu'];
-=======
-    $numIdentite = $ss['numIdentite'];
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     $dateNaissance = $ss['dateNaissance'];
     $lieuNaissance = $ss['lieuNaissance'];
     $nom = $ss['nom'];
@@ -1605,7 +1522,6 @@ function info($login)
     }
     ////////////Fin
 
-<<<<<<< HEAD
     return array($id_etu, $numIdentite, $num_etu, $dateNaissance, $lieuNaissance, $nom, $prenoms, $etablissement, $departement, $niveauFormation, $moyenne, $typeEtudiant, $sessionId, $sexe, $sexeL, $email, $email2);
     //fin
 }
@@ -1666,8 +1582,3 @@ function getLogerSuppleant($num_etu, $pavillon)
     $result = mysqli_query($connexion, $sql);
     return $result->fetch_assoc();
 }
-=======
-    return array($numIdentite, $dateNaissance, $lieuNaissance, $nom, $prenoms, $etablissement, $departement, $niveauFormation, $moyenne, $typeEtudiant, $sessionId, $sexe, $sexeL, $email, $email2);
-    //fin
-}
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523

@@ -7,10 +7,7 @@ if (empty($_SESSION['username']) && empty($_SESSION['mdp'])) {
 include('../../traitement/fonction.php');
 if (isset($_POST['numEtudiant'])) {
     $num_etu = $_POST['numEtudiant'];
-<<<<<<< HEAD
     $_SESSION['num_etu'] = $num_etu;
-=======
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
     if ($is_forclu = getIsForclu($num_etu)) {
         $queryString = http_build_query(['data' => $is_forclu]);
         header('Location: loger.php?erreurForclo=Cet etudiant est forclu !!!&statut=forclu&' . $queryString);
@@ -50,20 +47,9 @@ if (isset($_POST['numEtudiant'])) {
                 $monTitulaire_numEtu = $monTitulaire['num_etu'];
                 if (getValidateLogerByTitulaire($monTitulaire_numEtu)) {
                     if (getValidateLitBySuppleant($num_etu)) {
-<<<<<<< HEAD
                         if (getLogerSuppleant($num_etu, $_SESSION['pavillon'])) {
                             if (getValidateLogerBySuppleant($num_etu)) {
                                 $queryString = http_build_query(['data' => getValidateLogerBySuppleant($num_etu)]);
-=======
-                        if (getValidateLogerBySuppleant($num_etu)) {
-                            $queryString = http_build_query(['data' => getValidateLogerBySuppleant($num_etu)]);
-                            header('Location: loger.php?statut=' . $dataStudentConnect_statut['statut'] . '&erreurValider=Suppleant déja loger !!!&' . $queryString);
-                            exit();
-                        } else {
-                            $arrayValidateSuppleant = getValidateLitBySuppleant($num_etu);
-                            if ($arrayValidateSuppleant['etat_id_val'] == 'Migré') {
-                                $queryString = http_build_query(['data' => $arrayValidateSuppleant]);
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
                                 header('Location: loger.php?statut=' . $dataStudentConnect_statut['statut'] . '&erreurValider=Suppleant déja loger !!!&' . $queryString);
                                 exit();
                             } else {
@@ -105,11 +91,7 @@ if (isset($_POST['id_paie'])) {
     try {
         $id_paie = $_POST['id_paie'];
         $user = $_SESSION['username'];
-<<<<<<< HEAD
         $requete = setLoger($id_paie, $user, $id_etu);
-=======
-        $requete = setLoger($id_aff, $user);
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
         if ($requete == 1) {
             header('Location: loger.php?successValider=Logement titulaire Effectuer avec success !!!');
         }
@@ -123,11 +105,7 @@ if (isset($_POST['id_val'])) {
     try {
         $id_val = $_POST['id_val'];
         $user = $_SESSION['username'];
-<<<<<<< HEAD
         $requete = setLogerSuppleant($id_val, $user, $id_etu);
-=======
-        $requete = setLogerSuppleant($id_val, $user);
->>>>>>> 4ab3e8d6e0d4478baf0139928fb896d9191d7523
         if ($requete == 1) {
             header('Location: loger.php?successValider=Logement Suppleant Effectuer avec success !!!');
         }
